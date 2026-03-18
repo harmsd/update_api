@@ -1,0 +1,27 @@
+from typing import Annotated
+
+from fastapi import Depends
+
+from sqlmodel import SQLModel
+from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sessionmaker
+
+
+sqlite_file_name = "database.db"
+sqlite_url = f"sqlite:///{sqlite_file_name}"
+connect_args = {"check_same_thread": False}
+
+engine = create_async_engine("sqlite+aiosqlite:///database.db")
+new_session = async_sessionmaker(engine, expire_on_commit=False)
+
+async def get_session():
+    async with new_session() as session:
+        yield session
+
+SessionDep = Annotated[AsyncSession, Depends(get_session)]
+
+async def create_db_and_tables():
+    async with engine.begin() as conn:
+        await conn.run_sync(SQLModel.metadata.drop_all)
+        await conn.run_sync(SQLModel.metadata.create_all)
+
+
