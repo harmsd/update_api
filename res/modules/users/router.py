@@ -56,13 +56,13 @@ async def delete_user(user_id: int, session: SessionDep):
     await session.commit()
     return {"ok": True}
 
-@router.get("/users/me/")
+@router.get("/me/")
 async def read_users_me(
     current_user: Annotated[User, Depends(get_current_active_user)],
 ) -> User:
     return current_user
 
-@router.get("/users/me/items/")
+@router.get("/me/items/")
 async def read_own_items(
     current_user: Annotated[User, Depends(get_current_active_user)],
 ):

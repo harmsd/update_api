@@ -2,8 +2,8 @@ from datetime import datetime, timedelta, timezone
 from typing import Annotated
 
 import jwt
-from fastapi import Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from fastapi import Depends, HTTPException, Request, status
+from fastapi.security import OAuth2PasswordBearer
 from jwt.exceptions import InvalidTokenError
 from pwdlib import PasswordHash
 
@@ -15,7 +15,7 @@ from modules.users.models import User
 SECRET_KEY = "e832c20c1c56530b2026262f57c7014b34389d4cf7a763cb7a92036357dfdc09"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/login/token")
 
 password_hash = PasswordHash.recommended()
 DUMMY_HASH = password_hash.hash("dummypassword")
@@ -45,6 +45,16 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
+def verify_access_token(token: str):
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        username = payload.get("sub")
+        if username is None:
+            return None
+        return username
+    except InvalidTokenError:
+        return None
+
 async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
@@ -70,3 +80,14 @@ async def get_current_active_user(
     if current_user.disabled:
         raise HTTPException(status_code=400, detail="Inactive user")
     return current_user
+
+async def get_current_user_from_cookie(request: Request):
+    token = request.cookies.get("access_token")
+    if not token:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Нет токена")
+
+    username = verify_access_token(token)
+    if not username:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Неверный или просроченный токен")
+
+    return {"username": username}
