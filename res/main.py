@@ -22,7 +22,7 @@ origins = [
 
 app = FastAPI()
 app.include_router(users_router, prefix="/users")
-app.include_router(auth_router, prefix="/login")
+app.include_router(auth_router, prefix="/token")
 
 app.mount("/static", StaticFiles(directory="frontend/auth/static"), name="static")
 

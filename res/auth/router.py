@@ -15,25 +15,26 @@ from auth.utils import authenticate_user, create_access_token, ACCESS_TOKEN_EXPI
 router = APIRouter()
 
 class LoginRequest(BaseModel):
-    login: str
+    username: str
     password: str
 
 
-@router.post("/")
+@router.post("/login")
 async def login(data: LoginRequest):
     return {"message": "OK"}
 
 
-@router.get("/")
+@router.get("/login")
 async def login():
     return FileResponse("frontend/auth/templates/index.html")
 
 
-@router.post("/token")
+@router.post("/")
 async def login_for_access_token(
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
+    session: SessionDep
 ) -> Token:
-    user = authenticate_user(SessionDep, form_data.username, form_data.password)
+    user = await authenticate_user(session, form_data.username, form_data.password)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,

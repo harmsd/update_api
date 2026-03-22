@@ -11,17 +11,16 @@ from auth.models import TokenData
 from database import get_user, SessionDep
 from modules.users.models import User
 
+
 SECRET_KEY = "e832c20c1c56530b2026262f57c7014b34389d4cf7a763cb7a92036357dfdc09"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 password_hash = PasswordHash.recommended()
 DUMMY_HASH = password_hash.hash("dummypassword")
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
-
 def verify_password(plain_password, hashed_password):
-    print(f"{plain_password} \n {hashed_password}")
     return password_hash.verify(plain_password, hashed_password)
 
 def get_password_hash(password):

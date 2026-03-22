@@ -11,8 +11,8 @@ router = APIRouter()
 @router.post("/", response_model=UserPublic)
 async def create_user(user: UserCreate, session: SessionDep):
     db_user = User.model_validate(user)
-    hashed_password = get_password_hash(user.password)
-    db_user.password = hashed_password
+    hashed_password = get_password_hash(user.hashed_password)
+    db_user.hashed_password = hashed_password
     session.add(db_user)
     await session.commit()
     await session.refresh(db_user)

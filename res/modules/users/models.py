@@ -12,7 +12,7 @@ class User(UserBase, table=True):
     id: int | None = Field(default=None, primary_key=True)
     name: str
     username: str = Field(unique=True, index=True)
-    password: str
+    hashed_password: str
     role: str
     disabled: bool
 
@@ -21,7 +21,7 @@ class UserPublic(UserBase):
 
 class UserCreate(UserBase):
     username: str
-    password: str
+    hashed_password: str
 
 class UserUpdate(UserBase):
     name: str | None = None
@@ -29,4 +29,4 @@ class UserUpdate(UserBase):
     email: str | None = None
     role: str | None = None
     disabled: bool
-    password: str | None = None
+    hashed_password: str | None = None
