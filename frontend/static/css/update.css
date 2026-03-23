@@ -1,0 +1,235 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --bg: #1a2030; 
+  --panel: #1f2a45;
+  --panel-soft: #252f50;
+  --border: rgba(112, 140, 255, 0.25);
+  --text: #f0f6ff;
+  --muted: #a0abc5;
+  --accent: #2ae2d1;
+  --accent-2: #946eff;
+  --danger: #ff6b85;
+  --warning: #f9f268;
+}
+
+body {
+  font-family: Inter, Arial, sans-serif;
+  background:
+    radial-gradient(circle at top, rgba(60, 90, 200, 0.15), transparent 35%),
+    linear-gradient(180deg, #2a3855 0%, #1a2030 100%);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+.app {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  min-height: 100vh;
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 24px 18px;
+  background: rgba(31, 42, 68, 0.92);
+  border-right: 1px solid var(--border);
+}
+
+.logo {
+  width: 200px;
+  margin-bottom: 32px;
+}
+
+.menu {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.menu-item {
+  color: var(--muted);
+  text-decoration: none;
+  padding: 14px 16px;
+  border-radius: 12px;
+  transition: 0.2s ease;
+  border: 1px solid transparent;
+}
+
+.menu-item:hover,
+.menu-item.active {
+  color: var(--text);
+  background: rgba(42, 226, 209, 0.08);
+  border-color: rgba(42, 226, 209, 0.18);
+}
+
+.sidebar-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.user-badge {
+  min-width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  background: rgba(42, 226, 209, 0.12);
+  border: 1px solid rgba(42, 226, 209, 0.22);
+  border-radius: 12px;
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.content {
+  padding: 28px;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+h1 {
+  font-size: 32px;
+  margin-bottom: 8px;
+}
+
+.status {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(42, 226, 209, 0.12);
+  color: var(--accent);
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.topbar-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+input {
+  background: rgba(25, 34, 60, 0.95);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 12px 14px;
+  min-height: 46px;
+  border-radius: 12px;
+  min-width: 240px;
+}
+
+.primary-btn,
+.ghost-btn {
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  padding: 12px 16px;
+}
+
+.primary-btn {
+  background: linear-gradient(
+    135deg,
+    rgba(42, 226, 209, 0.18),
+    rgba(148, 110, 255, 0.16)
+  );
+  border-color: rgba(42, 226, 209, 0.25);
+  color: var(--text);
+}
+
+.ghost-btn {
+  background: transparent;
+  color: var(--text);
+}
+
+.logout {
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--panel-soft);
+  color: var(--text);
+  cursor: pointer;
+}
+
+.card {
+  background: linear-gradient(
+    180deg,
+    rgba(31, 42, 68, 0.96),
+    rgba(25, 34, 60, 0.96)
+  );
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 22px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
+}
+
+.section-header {
+  margin-bottom: 18px;
+}
+
+.section-header h3 {
+  font-size: 22px;
+  margin-bottom: 6px;
+}
+
+.section-header p {
+  color: var(--muted);
+}
+
+.update-list {
+  list-style: none;
+  display: grid;
+  gap: 14px;
+}
+
+.update-list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.update-list li:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.update-info strong {
+  display: block;
+  font-size: 18px;
+  margin-bottom: 4px;
+}
+
+.update-info small {
+  color: var(--muted);
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+}
+
+@media (max-width: 960px) {
+  .app {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+  }
+}

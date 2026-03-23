@@ -28,5 +28,5 @@ class UserUpdate(UserBase):
     organization: str | None = None
     email: str | None = None
     role: str | None = None
-    disabled: bool
+    disabled: bool | None = None
     hashed_password: str | None = None
