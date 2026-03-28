@@ -1,17 +1,17 @@
 from fastapi import Depends, FastAPI, HTTPException, Query, APIRouter
 from sqlmodel import Field, Session, SQLModel, create_engine, select
+from typing import Annotated
 
 from database import SessionDep
 
 from modules.users.models import *
-from auth.utils import get_current_active_user, get_password_hash
 
 router = APIRouter()
 
 @router.post("/", response_model=UserPublic)
 async def create_user(user: UserCreate, session: SessionDep):
     db_user = User.model_validate(user)
-    hashed_password = get_password_hash(user.hashed_password)
+    hashed_password = user.hashed_password
     db_user.hashed_password = hashed_password
     session.add(db_user)
     await session.commit()
@@ -56,17 +56,6 @@ async def delete_user(user_id: int, session: SessionDep):
     await session.commit()
     return {"ok": True}
 
-@router.get("/me/")
-async def read_users_me(
-    current_user: Annotated[User, Depends(get_current_active_user)],
-) -> User:
-    return current_user
-
-@router.get("/me/items/")
-async def read_own_items(
-    current_user: Annotated[User, Depends(get_current_active_user)],
-):
-    return [{"item_id": "Foo", "owner": current_user.username}]
 
 '''
 @app.post("/users")

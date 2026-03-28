@@ -1,20 +1,16 @@
-from typing import Annotated
 from sqlmodel import Field, Session, SQLModel, create_engine, select
 
 class UserBase(SQLModel):
-    name: str = Field(index=None)
     organization: str
     role: str
     email: str
-    disabled: bool
 
 class User(UserBase, table=True):
     id: int | None = Field(default=None, primary_key=True)
-    name: str
+    name: str = Field(index=None)
     username: str = Field(unique=True, index=True)
-    hashed_password: str
-    role: str
-    disabled: bool
+    password: bytes
+    disabled: bool = False
 
 class UserPublic(UserBase):
     id: int
