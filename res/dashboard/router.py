@@ -26,8 +26,9 @@ async def get_distributions(
     user: User = Depends(get_current_active_auth_user)
 ) -> list[Distribution]:
     distributions = [
-        Distribution(name="Distro 1", start="2024-01-01", end="2024-12-31"),
-        Distribution(name="Distro 2", start="2025-01-01", end="2025-12-31"),
+        Distribution(name="КАПРИС", start="2026-01-30", end="2027-01-29"),
+        Distribution(name="Завод", start="2026-02-25", end="2027-02-24"),
+        Distribution(name="Администрация", start="2026-02-25", end="2027-02-24"),
     ]
     return distributions
 
