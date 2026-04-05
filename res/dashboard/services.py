@@ -57,6 +57,3 @@ async def to_decrypt(file: UploadFile):
     data = json.loads(fernet.decrypt(encrypted).decode())
 
     return data
-
-
-to_encrypt(data)

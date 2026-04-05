@@ -10,7 +10,7 @@ from modules.licenses.router import router as licenses_router
 from home.router import router as home_router
 from auth.router import auth_router
 from auth.router import jwt_router
-from dashboard.router import router as dashboard_router
+from dashboard.router import router as main_router
 from dashboard.router import organizations_router
 from dashboard.router import settings_router
 from update.router import router as update_router
@@ -27,7 +27,7 @@ app.include_router(db_router)
 app.include_router(users_router)
 app.include_router(licenses_router)
 app.include_router(home_router)
-app.include_router(dashboard_router)
+app.include_router(main_router)
 app.include_router(organizations_router)
 app.include_router(settings_router)
 app.include_router(auth_router)

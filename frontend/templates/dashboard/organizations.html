@@ -17,8 +17,8 @@
         <img src="/static/img/logo.svg" alt="logo" class="logo">
       </div>
       <nav class="menu">
-        <a href="/licenses" class="menu-item">
-          <span>🔑</span> Лицензии
+        <a href="/main" class="menu-item">
+          <span>📄</span> Загрузка
         </a>
         <a href="/organizations" class="menu-item active">
           <span>🏢</span> Организации
@@ -39,34 +39,34 @@
     <header class="topbar">
       <div>
         <h1>Организации</h1>
-        <span class="status">12 активных</span>
+        <span class="status" id="activeCount">—</span>
       </div>
       <div class="topbar-actions">
-        <select>
+        <select id="statusFilter">
           <option>Все статусы</option>
-          <option>Активные</option>
-          <option>Истекают</option>
-          <option>Просрочены</option>
-          <option>Заблокированы</option>
+          <option>Активна</option>
+          <option>Истекает</option>
+          <option>Просрочена</option>
+          <option>Заблокирована</option>
         </select>
-        <input type="search" placeholder="Поиск организации…" />
+        <input type="search" id="searchInput" placeholder="Поиск организации…" />
       </div>
     </header>
 
     <section class="stats-grid">
       <article class="card stat-card">
         <p class="card-label">Всего организаций</p>
-        <h2>12</h2>
-        <span>+2 за этот месяц</span>
+        <h2 id="statTotal">—</h2>
+        <span id="statTotalHint">—</span>
       </article>
       <article class="card stat-card">
         <p class="card-label">Активных лицензий</p>
-        <h2>96</h2>
-        <span>Из 128 выдано</span>
+        <h2 id="statActive">—</h2>
+        <span id="statActiveHint">—</span>
       </article>
       <article class="card stat-card">
         <p class="card-label">Истекают скоро</p>
-        <h2 style="color:var(--warning)">4</h2>
+        <h2 id="statExpiring">—</h2>
         <span>В течение 30 дней</span>
       </article>
     </section>
@@ -77,188 +77,164 @@
           <tr>
             <th>Организация</th>
             <th>ИНН</th>
-            <th>Лицензии</th>
+            <th>Хост</th>
             <th>Тариф</th>
             <th>Статус</th>
             <th>Дата окончания</th>
             <th>Действия</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody id="licenseTableBody">
           <tr>
-            <td data-label="Организация">
-              <strong>ООО «Альфа Технологии»</strong>
-              <small>info@alpha-tech.ru</small>
-            </td>
-            <td data-label="ИНН">7701234567</td>
-            <td data-label="Лицензии">24 / 30</td>
-            <td data-label="Тариф"><span class="badge badge-purple">Enterprise</span></td>
-            <td data-label="Статус"><span class="badge badge-active">Активна</span></td>
-            <td data-label="Окончание">12.01.2027</td>
-            <td data-label="Действия">
-              <div class="table-actions">
-                <button class="icon-btn" title="Редактировать">✏️</button>
-                <button class="icon-btn" title="Лицензии">🔑</button>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td data-label="Организация">
-              <strong>АО «Берег Системы»</strong>
-              <small>admin@bereg.io</small>
-            </td>
-            <td data-label="ИНН">7709876543</td>
-            <td data-label="Лицензии">8 / 10</td>
-            <td data-label="Тариф"><span class="badge badge-active">Pro</span></td>
-            <td data-label="Статус"><span class="badge badge-active">Активна</span></td>
-            <td data-label="Окончание">30.03.2027</td>
-            <td data-label="Действия">
-              <div class="table-actions">
-                <button class="icon-btn">✏️</button>
-                <button class="icon-btn">🔑</button>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td data-label="Организация">
-              <strong>ГБУ «Инфра-Центр»</strong>
-              <small>it@infra.gov.ru</small>
-            </td>
-            <td data-label="ИНН">7720001122</td>
-            <td data-label="Лицензии">15 / 20</td>
-            <td data-label="Тариф"><span class="badge badge-purple">Enterprise</span></td>
-            <td data-label="Статус"><span class="badge badge-warn">Истекает</span></td>
-            <td data-label="Окончание">15.04.2026</td>
-            <td data-label="Действия">
-              <div class="table-actions">
-                <button class="icon-btn">✏️</button>
-                <button class="icon-btn">🔑</button>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td data-label="Организация">
-              <strong>ИП Сидоров К.Ю.</strong>
-              <small>k.sidorov@mail.ru</small>
-            </td>
-            <td data-label="ИНН">772398765</td>
-            <td data-label="Лицензии">1 / 5</td>
-            <td data-label="Тариф"><span class="badge badge-neutral">Starter</span></td>
-            <td data-label="Статус"><span class="badge badge-active">Активна</span></td>
-            <td data-label="Окончание">01.09.2026</td>
-            <td data-label="Действия">
-              <div class="table-actions">
-                <button class="icon-btn">✏️</button>
-                <button class="icon-btn">🔑</button>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td data-label="Организация">
-              <strong>ООО «ДатаЛайн»</strong>
-              <small>cto@dataline.tech</small>
-            </td>
-            <td data-label="ИНН">7750012398</td>
-            <td data-label="Лицензии">48 / 50</td>
-            <td data-label="Тариф"><span class="badge badge-purple">Enterprise</span></td>
-            <td data-label="Статус"><span class="badge badge-danger">Просрочена</span></td>
-            <td data-label="Окончание">28.02.2026</td>
-            <td data-label="Действия">
-              <div class="table-actions">
-                <button class="icon-btn">✏️</button>
-                <button class="icon-btn">🔑</button>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td data-label="Организация">
-              <strong>ЗАО «КиберГард»</strong>
-              <small>security@cyberguard.ru</small>
-            </td>
-            <td data-label="ИНН">7734009812</td>
-            <td data-label="Лицензии">12 / 15</td>
-            <td data-label="Тариф"><span class="badge badge-active">Pro</span></td>
-            <td data-label="Статус"><span class="badge badge-active">Активна</span></td>
-            <td data-label="Окончание">20.11.2026</td>
-            <td data-label="Действия">
-              <div class="table-actions">
-                <button class="icon-btn">✏️</button>
-                <button class="icon-btn">🔑</button>
-              </div>
+            <td colspan="7" style="text-align:center;color:var(--text-muted);padding:2rem;">
+              Загрузка…
             </td>
           </tr>
         </tbody>
       </table>
       <div class="pagination">
-        <span>Показано 6 из 12</span>
-        <div class="page-btns">
-          <button class="page-btn active">1</button>
-          <button class="page-btn">2</button>
-          <button class="page-btn">›</button>
-        </div>
+        <span id="paginationInfo">—</span>
+        <div class="page-btns" id="pageBtns"></div>
       </div>
     </div>
 
   </main>
 </div>
 
-<div class="modal-overlay" id="orgModal">
+<div class="modal-overlay" id="editModal">
   <div class="modal">
-    <h2>Добавить организацию</h2>
+    <h2>Редактировать организацию</h2>
+
+    <input type="hidden" id="editId" />
+
     <div class="form-row">
       <div class="form-group">
         <label>Название *</label>
-        <input type="text" placeholder="ООО «Название»" />
+        <input type="text" id="editName" placeholder="ООО «Название»" />
       </div>
       <div class="form-group">
         <label>ИНН *</label>
-        <input type="text" placeholder="7700000000" />
+        <input type="text" id="editInn" placeholder="7700000000" maxlength="12" />
       </div>
     </div>
-    <div class="form-group">
-      <label>Email контакта</label>
-      <input type="email" placeholder="admin@company.ru" />
-    </div>
+
     <div class="form-row">
       <div class="form-group">
-        <label>Тариф</label>
-        <select>
-          <option>Starter</option>
-          <option>Pro</option>
-          <option selected>Enterprise</option>
-        </select>
+        <label>Email</label>
+        <input type="email" id="editEmail" placeholder="admin@company.ru" />
       </div>
       <div class="form-group">
-        <label>Количество лицензий</label>
-        <input type="number" placeholder="10" min="1" />
+        <label>Тариф</label>
+        <select id="editTariff">
+          <option>Starter</option>
+          <option>Pro</option>
+          <option>Enterprise</option>
+        </select>
       </div>
     </div>
-    <div class="form-group">
-      <label>Дата окончания</label>
-      <input type="text" placeholder="ДД.ММ.ГГГГ" />
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Hostname / IP</label>
+        <input type="text" id="editHostname" placeholder="192.168.1.1" />
+      </div>
+      <div class="form-group">
+        <label>Операционная система</label>
+        <select id="editOs">
+          <option value="">— Выбрать —</option>
+          <option>Windows Server 2022</option>
+          <option>Windows Server 2019</option>
+          <option>Ubuntu 22.04</option>
+          <option>Ubuntu 20.04</option>
+          <option>CentOS 8</option>
+          <option>Astra Linux</option>
+          <option>Другое</option>
+        </select>
+      </div>
     </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>MAC-адрес</label>
+        <input type="text" id="editMac" placeholder="AA:BB:CC:DD:EE:FF" maxlength="17" />
+      </div>
+      <div class="form-group">
+        <label>UUID / Serial</label>
+        <input type="text" id="editUuid" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" />
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Дата окончания</label>
+        <input type="text" id="editExpiry" placeholder="ДД.ММ.ГГГГ" />
+      </div>
+      <div class="form-group">
+        <label>Статус</label>
+        <select id="editDisabled">
+          <option value="false">Активна</option>
+          <option value="true">Заблокирована</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Комментарий</label>
+      <textarea id="editComment" rows="3" placeholder="Дополнительная информация…"></textarea>
+    </div>
+
     <div class="modal-footer">
-      <button class="ghost-btn" onclick="closeModal()">Отмена</button>
-      <button class="primary-btn">Добавить</button>
+      <button class="ghost-btn" onclick="closeEditModal()">Отмена</button>
+      <button class="primary-btn" onclick="saveEdit()">💾 Сохранить</button>
     </div>
   </div>
 </div>
 
-<script>
-  function openModal()  { document.getElementById('orgModal').classList.add('open'); }
-  function closeModal() { document.getElementById('orgModal').classList.remove('open'); }
+<div class="modal-overlay" id="keyModal">
+  <div class="modal">
+    <h2>🔑 Ключ доступа</h2>
+    <p class="modal-subtitle" id="keyModalSubtitle">—</p>
 
-  document.getElementById('orgModal').addEventListener('click', function(e) {
-    if (e.target === this) closeModal();
-  });
+    <div class="form-group">
+      <label>Лицензионный ключ (SHA-256)</label>
+      <div class="input-copy-wrap">
+        <input type="text" id="keyHash" readonly placeholder="Генерация…" />
+        <button class="copy-btn" onclick="copyField('keyHash')" title="Копировать">⧉</button>
+      </div>
+    </div>
 
-  document.querySelectorAll('.page-btn').forEach(btn => {
-    btn.addEventListener('click', function() {
-      document.querySelectorAll('.page-btn').forEach(b => b.classList.remove('active'));
-      this.classList.add('active');
-    });
-  });
-</script>
+    <div class="key-divider">Учётные данные для входа в личный кабинет</div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Логин</label>
+        <div class="input-copy-wrap">
+          <input type="text" id="keyLogin" readonly placeholder="—" />
+          <button class="copy-btn" onclick="copyField('keyLogin')" title="Копировать">⧉</button>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Пароль</label>
+        <div class="input-copy-wrap">
+          <input type="text" id="keyPassword" readonly placeholder="—" />
+          <button class="copy-btn" onclick="copyField('keyPassword')" title="Копировать">⧉</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="key-warning">
+      ⚠️ Сохраните данные — пароль показывается только один раз
+    </div>
+
+    <div class="modal-footer">
+      <button class="ghost-btn" onclick="closeKeyModal()">Закрыть</button>
+      <button class="primary-btn" onclick="regenerateKey()">🔄 Перегенерировать</button>
+    </div>
+  </div>
+</div>
+
+
+<script src="/static/dashboard/organizations.js"></script>
 
 </body>
 </html>

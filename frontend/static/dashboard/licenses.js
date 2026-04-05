@@ -234,7 +234,7 @@ async function submitForm() {
     }
 
     // Успех — редирект на список лицензий
-    window.location.href = '/licenses';
+    window.location.href = '/organizations';
 
   } catch (err) {
     alert('Не удалось соединиться с сервером');

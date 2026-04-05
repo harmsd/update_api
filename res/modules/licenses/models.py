@@ -1,25 +1,66 @@
 from sqlmodel import Field, SQLModel
 from datetime import date
 
+class OrganizationIn(SQLModel):
+    name: str
+    inn: str
+    email: str
+    tariff: str
+    licenses: int
+    expiry: str
+
+class ChecksumIn(SQLModel):
+    algorithm: str
+    value: str
+
+class HostIn(SQLModel):
+    hostname: str
+    os: str
+    mac: str
+    uuid: str
+    comment: str
+
+class LicenseFromFront(SQLModel):
+    organization: OrganizationIn
+    checksum: ChecksumIn
+    host: HostIn
+
 class LicenseBase(SQLModel):
-    organization: str = Field(index=None)
+    name: str = Field(index=None)
+    inn: str
+    email: str
+    tariff: str
     disabled: bool = False
+    hostname: str
+    os: str
+    mac: str
+    uuid: str
+    comment: str
     start_date: date
     end_date: date
 
 class License(LicenseBase, table=True):
     id: int | None = Field(default=None, primary_key=True)
-    check_sum: int
+    checksum: str
+
 
 class LicensePublic(LicenseBase):
     id: int
 
 class LicenseCreate(LicenseBase):
-    check_sum: int
+    checksum: str
 
 class LicenseUpdate(LicenseBase):
-    organization: str | None = None
-    disabled: bool | None = None
-    start_date: date | None = None
-    end_date: date | None = None
-    check_sum: str | None = None
+    name: str = Field(index=None)
+    inn: str
+    email: str
+    tariff: str
+    disabled: bool = False
+    hostname: str
+    os: str
+    mac: str
+    uuid: str
+    comment: str
+    start_date: date
+    end_date: date
+    checksum: str

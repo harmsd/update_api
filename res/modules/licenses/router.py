@@ -1,28 +1,59 @@
-from fastapi import HTTPException, Query, APIRouter, status, Depends
+from fastapi import File, HTTPException, Query, APIRouter, UploadFile
+from fastapi.responses import JSONResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlmodel import select
 from typing import Annotated
+from datetime import datetime, date
+import json
 
 from database import SessionDep
 from modules.licenses.models import *
 from exceptions import user_not_found
+from dashboard.services import to_decrypt
 
-router = APIRouter(prefix="/license", tags=["licenses"])
+router = APIRouter(prefix="/licenses")
+
+@router.post("/upload-enc")
+async def upload_enc(file: UploadFile = File(...)):
+    if not file.filename.lower().endswith(".enc"):
+        raise HTTPException(status_code=400, detail="Allowed only .enc files")
+    try:
+        content = await to_decrypt(file)
+    except json.JSONDecodeError:
+        return JSONResponse({"error": "Incorrect file format"}, status_code=400)
+    
+    return content
 
 @router.post("/", response_model=LicensePublic)
-async def create_license(license_in: LicenseCreate, session: SessionDep):
-    
+async def create_license(payload: LicenseFromFront, session: SessionDep):
+
+    try:
+        end_date = datetime.strptime(payload.organization.expiry, "%d.%m.%Y").date() \
+            if isinstance(payload.organization.expiry, str) \
+            else payload.organization.expiry
+    except ValueError:
+        raise HTTPException(status_code=400, detail="Неверный формат даты. Ожидается ДД.ММ.ГГГГ")
+
     db_license = License(
-        organization=license_in.organization,
-        disabled=license_in.disabled,
-        start_date=license_in.start_date,
-        end_date=license_in.end_date
+        name=payload.organization.name,
+        inn=payload.organization.inn,
+        email=payload.organization.email,
+        tariff=payload.organization.tariff,
+        disabled=False,
+        hostname=payload.host.hostname,
+        os=payload.host.os,
+        mac=payload.host.mac,
+        uuid=payload.host.uuid,
+        comment=payload.host.comment,
+        start_date=date.today(),
+        end_date=end_date,
+        checksum=payload.checksum.value
     )
-    
+
     session.add(db_license)
     await session.commit()
     await session.refresh(db_license)
-    
+
     return db_license
 
 @router.get("/", response_model=list[LicensePublic])
@@ -31,35 +62,64 @@ async def read_licenses(
     offset: int = 0,
     limit: Annotated[int, Query(le=100)] = 100,
 ):
-    result = await session.execute(select(license).offset(offset).limit(limit))
-    users = result.scalars().all()
-    return users
+    result = await session.execute(
+        select(License).offset(offset).limit(limit)
+    )
+    return result.scalars().all()
 
 @router.get("/{license_id}", response_model=LicensePublic)
-async def read_license(user_id: int, session: SessionDep):
-    user = await session.get(License, user_id)
-    if not user:
+async def read_license(license_id: int, session: SessionDep):
+    db_license = await session.get(License, license_id)
+    if not db_license:
         raise user_not_found
-    return user
+    return db_license
 
 @router.patch("/{license_id}", response_model=LicensePublic)
-async def update_license(license_id: int, user: LicenseUpdate, session: SessionDep):
-    user_db = await session.get(License, license_id)
-    if not user_db:
+async def update_license(
+    license_id: int,
+    payload: LicenseFromFront,
+    session: SessionDep,
+):
+    db_license = await session.get(License, license_id)
+    if not db_license:
         raise user_not_found
-    user_data = user.model_dump(exclude_unset=True)
-    user_db.sqlmodel_update(user_data)
-    session.add(user_db)
+
+    try:
+        end_date = (
+            datetime.strptime(payload.organization.expiry, "%d.%m.%Y").date()
+            if isinstance(payload.organization.expiry, str)
+            else payload.organization.expiry
+        )
+    except ValueError:
+        raise HTTPException(
+            status_code=400,
+            detail="Неверный формат даты. Ожидается ДД.ММ.ГГГГ"
+        )
+
+    db_license.name     = payload.organization.name
+    db_license.inn      = payload.organization.inn
+    db_license.email    = payload.organization.email
+    db_license.tariff   = payload.organization.tariff
+    db_license.hostname = payload.host.hostname
+    db_license.os       = payload.host.os
+    db_license.mac      = payload.host.mac
+    db_license.uuid     = payload.host.uuid
+    db_license.comment  = payload.host.comment
+    db_license.end_date = end_date
+    db_license.checksum = payload.checksum.value
+
+    session.add(db_license)
     await session.commit()
-    await session.refresh(user_db)
-    return user_db 
+    await session.refresh(db_license)
+
+    return db_license
 
 @router.delete("/{license_id}")
 async def delete_license(license_id: int, session: SessionDep):
-    user = await session.get(License, license_id)
-    if not user:
+    db_license = await session.get(License, license_id)
+    if not db_license:
         raise user_not_found
-    await session.delete(user)
+    await session.delete(db_license)
     await session.commit()
     return {"ok": True}
 
