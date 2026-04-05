@@ -16,10 +16,15 @@ fernet = Fernet(key)
 # with open("data.enc", "wb") as f:
 #     f.write(encrypted)
 
+async def to_encrypt(data):
+    encrypted = await fernet.encrypt(json.dumps(data).encode())
+    with await open("data.enc", "wb") as f:
+        await f.write(encrypted)
 
-with open("data.enc", "rb") as f:
-    encrypted = f.read()
 
-data = json.loads(fernet.decrypt(encrypted).decode())
+async def to_decrypt(file):
+    with await open(file, "rb") as f:
+        encrypted = await f.read()
 
-print(data)
+    data = await json.loads(fernet.decrypt(encrypted).decode())
+    return data

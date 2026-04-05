@@ -62,16 +62,16 @@
             <div class="dropzone-icon">⬆️</div>
             <p class="dropzone-title">Перетащите файл сюда</p>
             <p class="dropzone-hint">.enc — поля заполнятся автоматически</p>
-            <input type="file" id="fileInput" accept=".enc" hidden onchange="handleFile(event)" />
+            <input type="file" id="fileInput" accept=".json,.lic,.key,.txt" hidden onchange="handleFile(event)" />
           </div>
           <div class="file-chosen" id="fileChosen">
             <span class="file-icon">📎</span>
             <span class="file-name" id="fileName">—</span>
             <button class="file-remove" onclick="removeFile()">✕</button>
           </div>
-          <div class="upload-status" id="uploadStatus"></div>
         </div>
 
+        <!-- Организация -->
         <div class="section-card">
           <div class="section-card-title">
             <span class="section-icon">🏢</span>
@@ -116,8 +116,10 @@
 
       </div>
 
+      <!-- Правая колонка: контрольная сумма + хост -->
       <div class="upload-col">
 
+        <!-- Контрольная сумма -->
         <div class="section-card">
           <div class="section-card-title">
             <span class="section-icon">🔐</span>
@@ -148,6 +150,7 @@
           </div>
         </div>
 
+        <!-- Хост -->
         <div class="section-card">
           <div class="section-card-title">
             <span class="section-icon">🖥️</span>
@@ -191,6 +194,7 @@
       </div>
     </div>
 
+    <!-- Нижняя панель действий -->
     <div class="bottom-bar">
       <p class="bottom-bar-hint">* — обязательные поля</p>
       <div class="bottom-bar-actions">
@@ -203,7 +207,98 @@
   </main>
 </div>
 
-<script src="/static/js/licenses.js"></script>
+<script>
+  /* ── Drag & Drop ── */
+  function onDragOver(e)  { e.preventDefault(); document.getElementById('dropzone').classList.add('drag-over'); }
+  function onDragLeave()  { document.getElementById('dropzone').classList.remove('drag-over'); }
+  function onDrop(e) {
+    e.preventDefault();
+    onDragLeave();
+    const file = e.dataTransfer.files[0];
+    if (file) loadFile(file);
+  }
+  function handleFile(e) { if (e.target.files[0]) loadFile(e.target.files[0]); }
+
+  function loadFile(file) {
+    document.getElementById('fileName').textContent = file.name;
+    document.getElementById('fileChosen').classList.add('visible');
+    document.getElementById('dropzone').classList.add('has-file');
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      try {
+        const data = JSON.parse(e.target.result);
+        if (data.organization) {
+          if (data.organization.name)     document.getElementById('orgName').value     = data.organization.name;
+          if (data.organization.inn)      document.getElementById('orgInn').value      = data.organization.inn;
+          if (data.organization.email)    document.getElementById('orgEmail').value    = data.organization.email;
+          if (data.organization.tariff)   document.getElementById('orgTariff').value   = data.organization.tariff;
+          if (data.organization.licenses) document.getElementById('orgLicCount').value = data.organization.licenses;
+          if (data.organization.expiry)   document.getElementById('orgExpiry').value   = data.organization.expiry;
+        }
+        if (data.checksum) {
+          if (data.checksum.algorithm) document.getElementById('checksumAlgo').value  = data.checksum.algorithm;
+          if (data.checksum.value)     document.getElementById('checksumValue').value = data.checksum.value;
+        }
+        if (data.host) {
+          if (data.host.hostname) document.getElementById('hostName').value    = data.host.hostname;
+          if (data.host.os)       document.getElementById('hostOs').value      = data.host.os;
+          if (data.host.mac)      document.getElementById('hostMac').value     = data.host.mac;
+          if (data.host.uuid)     document.getElementById('hostUuid').value    = data.host.uuid;
+          if (data.host.comment)  document.getElementById('hostComment').value = data.host.comment;
+        }
+      } catch(_) {}
+    };
+    reader.readAsText(file);
+  }
+
+  function removeFile() {
+    document.getElementById('fileChosen').classList.remove('visible');
+    document.getElementById('dropzone').classList.remove('has-file');
+    document.getElementById('fileInput').value = '';
+    document.getElementById('fileName').textContent = '—';
+  }
+
+  /* ── Checksum ── */
+  function copyChecksum() {
+    const val = document.getElementById('checksumValue').value;
+    if (val) navigator.clipboard.writeText(val);
+  }
+
+  function verifyChecksum() {
+    const val  = document.getElementById('checksumValue').value.trim();
+    const dot  = document.querySelector('.cs-dot');
+    const text = document.getElementById('csText');
+    if (!val) { dot.className = 'cs-dot cs-neutral'; text.textContent = 'Введите значение'; return; }
+    const ok = val.length >= 32;
+    dot.className    = 'cs-dot ' + (ok ? 'cs-ok' : 'cs-fail');
+    text.textContent = ok ? 'Совпадает' : 'Не совпадает';
+  }
+
+  /* ── Reset / Submit ── */
+  function resetForm() {
+    ['orgName','orgInn','orgEmail','orgLicCount','orgExpiry',
+     'checksumValue','hostName','hostMac','hostUuid','hostComment'].forEach(id => {
+      document.getElementById(id).value = '';
+    });
+    ['orgTariff','checksumAlgo','hostOs'].forEach(id => {
+      document.getElementById(id).selectedIndex = 0;
+    });
+    removeFile();
+    document.querySelector('.cs-dot').className = 'cs-dot cs-neutral';
+    document.getElementById('csText').textContent = 'Не проверено';
+  }
+
+  function submitForm() {
+    const name = document.getElementById('orgName').value.trim();
+    const inn  = document.getElementById('orgInn').value.trim();
+    if (!name || !inn) {
+      alert('Заполните обязательные поля: Название и ИНН');
+      return;
+    }
+    // здесь fetch/POST на бекенд
+  }
+</script>
 
 </body>
 </html>
