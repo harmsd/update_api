@@ -443,3 +443,9 @@ h1 { font-size: 28px; margin-bottom: 8px; }
     align-items: flex-start;
   }
 }
+
+
+.upload-status { margin-top: 8px; font-size: 0.875rem; min-height: 1.2em; }
+.upload-status--loading { color: #888; }
+.upload-status--success { color: #437a22; }
+.upload-status--error   { color: #a12c7b; }
