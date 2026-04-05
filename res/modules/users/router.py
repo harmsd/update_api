@@ -1,21 +1,35 @@
-from fastapi import Depends, FastAPI, HTTPException, Query, APIRouter
-from sqlmodel import Field, Session, SQLModel, create_engine, select
+from fastapi import HTTPException, Query, APIRouter, status, Depends
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlmodel import select
 from typing import Annotated
 
 from database import SessionDep
 
-from modules.users.models import *
+from auth.utils import hash_password
+from modules.users.models import User, UserUpdate, UserPublic, UserCreate
+from exceptions import user_not_found
 
-router = APIRouter()
+router = APIRouter(prefix="/user", tags=["users"])
 
 @router.post("/", response_model=UserPublic)
-async def create_user(user: UserCreate, session: SessionDep):
-    db_user = User.model_validate(user)
-    hashed_password = user.hashed_password
-    db_user.hashed_password = hashed_password
+async def create_user(user_in: UserCreate, session: SessionDep):
+
+    hashed_password = hash_password(user_in.password_string)
+    
+    db_user = User(
+        name=user_in.name,
+        username=user_in.username,
+        password=hashed_password,
+        organization=user_in.organization,
+        role=user_in.role,
+        email=user_in.email,
+        disabled=False,
+    )
+    
     session.add(db_user)
     await session.commit()
     await session.refresh(db_user)
+    
     return db_user
 
 @router.get("/", response_model=list[UserPublic])
@@ -32,14 +46,14 @@ async def read_users(
 async def read_user(user_id: int, session: SessionDep):
     user = await session.get(User, user_id)
     if not user:
-        raise HTTPException(status_code=404, detail="User not found")
+        raise user_not_found
     return user
 
 @router.patch("/{user_id}", response_model=UserPublic)
 async def update_user(user_id: int, user: UserUpdate, session: SessionDep):
     user_db = await session.get(User, user_id)
     if not user_db:
-        raise HTTPException(status_code=404, detail="User not found")
+        raise user_not_found
     user_data = user.model_dump(exclude_unset=True)
     user_db.sqlmodel_update(user_data)
     session.add(user_db)
@@ -51,11 +65,10 @@ async def update_user(user_id: int, user: UserUpdate, session: SessionDep):
 async def delete_user(user_id: int, session: SessionDep):
     user = await session.get(User, user_id)
     if not user:
-        raise HTTPException(status_code=404, detail="User not found")
-    session.delete(user)
+        raise user_not_found
+    await session.delete(user)
     await session.commit()
     return {"ok": True}
-
 
 '''
 @app.post("/users")

@@ -17,12 +17,11 @@ document.addEventListener("DOMContentLoaded", () => {
         formData.append("password", password);
 
         try {
-            const response = await fetch("http://127.0.0.1:8000/login/token", {
+            const response = await fetch("http://127.0.0.1:8000/jwt/login", {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/x-www-form-urlencoded"
-                },
-                body: formData
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: formData,
+                credentials: "include"
             });
 
             const data = await response.json();
@@ -31,7 +30,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 throw new Error(data.detail || "Ошибка авторизации");
             }
 
-            window.location.href = "/dashboard";
+            window.location.href = "/licenses";
 
         } catch (error) {
             console.error("Ошибка:", error);

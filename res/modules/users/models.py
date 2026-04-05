@@ -1,4 +1,7 @@
-from sqlmodel import Field, Session, SQLModel, create_engine, select
+# models.py
+
+from sqlmodel import SQLModel, Field
+from typing import Optional
 
 class UserBase(SQLModel):
     organization: str
@@ -7,7 +10,7 @@ class UserBase(SQLModel):
 
 class User(UserBase, table=True):
     id: int | None = Field(default=None, primary_key=True)
-    name: str = Field(index=None)
+    name: str = Field(index=True)
     username: str = Field(unique=True, index=True)
     password: bytes
     disabled: bool = False
@@ -15,14 +18,18 @@ class User(UserBase, table=True):
 class UserPublic(UserBase):
     id: int
 
-class UserCreate(UserBase):
+class UserCreate(SQLModel):
+    name: str
     username: str
-    hashed_password: str
+    password_string: str
+    organization: str
+    role: str
+    email: str
 
-class UserUpdate(UserBase):
-    name: str | None = None
-    organization: str | None = None
-    email: str | None = None
-    role: str | None = None
-    disabled: bool | None = None
-    hashed_password: str | None = None
+class UserUpdate(SQLModel):
+    name: Optional[str] = None
+    organization: Optional[str] = None
+    email: Optional[str] = None
+    role: Optional[str] = None
+    disabled: Optional[bool] = None
+    password: Optional[bytes] = None

@@ -1,0 +1,23 @@
+{
+  "organization": {
+    "name": "ООО «ТехноСофт»",
+    "inn": "7712345678",
+    "email": "info@technosoft.ru",
+    "tariff": "Профессиональный",
+    "license_count": 25,
+    "expiry_date": "31.12.2026"
+  },
+
+  "checksum": {
+    "algorithm": "SHA-256",
+    "value": "a3f5c2e1b7d94082ef3120c6a8b5d7f9e4c1023ab8d7e6f5c4b3a2910e8f7d6c"
+  },
+  
+  "host_info": {
+    "hostname_ip": "10.0.1.42",
+    "os": "Windows Server 2022",
+    "mac_address": "3C:52:A1:4B:7F:2D",
+    "uuid_serial": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+    "comment": "Основной сервер приложений, стойка A3"
+  }
+}

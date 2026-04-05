@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from fastapi.responses import FileResponse
 
-router = APIRouter()
+router = APIRouter(tags=["home"])
 
 @router.get("/")
 async def home():

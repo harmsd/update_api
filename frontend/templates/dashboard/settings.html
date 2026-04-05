@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Настройки</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/settings.css" />
+</head>
+<body>
+
+<div class="app">
+  <aside class="sidebar">
+    <div>
+      <div class="logo">
+        <img src="/static/img/logo.svg" alt="logo" class="logo">
+      </div>
+      <nav class="menu">
+        <a href="/licenses" class="menu-item">
+          <span>🔑</span> Лицензии
+        </a>
+        <a href="/organizations" class="menu-item">
+          <span>🏢</span> Организации
+        </a>
+        <a href="/settings" class="menu-item active">
+          <span>⚙️</span> Настройки
+        </a>
+      </nav>
+    </div>
+    <div class="sidebar-footer">
+      <div class="user-badge">А</div>
+      <button class="logout">Выйти</button>
+    </div>
+  </aside>
+  <main class="content">
+
+    <header class="topbar">
+      <div>
+        <h1>Настройки</h1>
+        <span class="status">Аккаунт</span>
+      </div>
+    </header>
+
+    <div class="settings-grid">
+
+      <nav class="settings-nav">
+        <div class="settings-nav-item active" onclick="showTab('profile', this)">
+          👤 Профиль
+        </div>
+        <div class="settings-nav-item" onclick="showTab('security', this)">
+          🔒 Безопасность
+        </div>
+        <!--
+        <div class="settings-nav-item" onclick="showTab('notifications', this)">
+          🔔 Уведомления
+        </div>
+        -->
+        <div class="settings-nav-item" onclick="showTab('api', this)">
+          🔌 API-ключи
+        </div>
+        <div class="settings-nav-item" onclick="showTab('danger', this)">
+          ⚠️ Опасная зона
+        </div>
+      </nav>
+      <div>
+        <div class="settings-panel active" id="tab-profile">
+          <div class="settings-section">
+            <p class="settings-section-title">Данные профиля</p>
+            <div class="avatar-area">
+              <div class="avatar-big">А</div>
+              <div>
+                <button class="ghost-btn" style="font-size:13px;padding:8px 14px;min-height:36px">
+                  Загрузить фото
+                </button>
+                <p class="avatar-hint">PNG, JPG до 2 МБ</p>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Имя</label>
+                <input type="text" value="Алексей" />
+              </div>
+              <div class="form-group">
+                <label>Фамилия</label>
+                <input type="text" value="Петров" />
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Email</label>
+              <input type="email" value="admin@pentest.local" />
+            </div>
+            <div class="form-group">
+              <label>Роль</label>
+              <input type="text" value="Администратор" readonly />
+            </div>
+          </div>
+          <div class="form-footer">
+            <button class="primary-btn">Сохранить изменения</button>
+          </div>
+        </div>
+
+        <div class="settings-panel" id="tab-security">
+          <div class="settings-section">
+            <p class="settings-section-title">Смена пароля</p>
+            <div class="form-group">
+              <label>Текущий пароль</label>
+              <input type="password" placeholder="••••••••" />
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Новый пароль</label>
+                <input type="password" placeholder="••••••••" />
+              </div>
+              <div class="form-group">
+                <label>Подтвердить пароль</label>
+                <input type="password" placeholder="••••••••" />
+              </div>
+            </div>
+            <button class="primary-btn" style="margin-top:4px">Обновить пароль</button>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="settings-section">
+            <p class="settings-section-title">Двухфакторная аутентификация</p>
+            <div class="setting-row">
+              <div class="setting-info">
+                <strong>Authenticator App (TOTP)</strong>
+                <span>Google Authenticator, Yandex Key</span>
+              </div>
+              <label class="toggle">
+                <input type="checkbox" checked />
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="setting-row">
+              <div class="setting-info">
+                <strong>SMS-подтверждение</strong>
+                <span>+7 (***) ***-**-42</span>
+              </div>
+              <label class="toggle">
+                <input type="checkbox" />
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="settings-section">
+            <p class="settings-section-title">Активные сессии</p>
+            <div class="setting-row">
+              <div class="setting-info">
+                <strong>MacBook Pro — Safari</strong>
+                <span>Москва • Сейчас активна</span>
+              </div>
+              <span class="badge badge-active session-current">Текущая</span>
+            </div>
+            <div class="setting-row">
+              <div class="setting-info">
+                <strong>iPhone 15 — Safari</strong>
+                <span>Москва • 2 часа назад</span>
+              </div>
+              <button class="ghost-btn" style="font-size:12px;padding:6px 12px;min-height:32px;color:var(--danger)">
+                Завершить
+              </button>
+            </div>
+            <div class="setting-row">
+              <div class="setting-info">
+                <strong>Windows PC — Chrome</strong>
+                <span>Санкт-Петербург • Вчера, 18:42</span>
+              </div>
+              <button class="ghost-btn" style="font-size:12px;padding:6px 12px;min-height:32px;color:var(--danger)">
+                Завершить
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-panel" id="tab-notifications">
+          <div class="settings-section">
+            <p class="settings-section-title">Email-уведомления</p>
+            <div class="setting-row">
+              <div class="setting-info">
+                <strong>Истечение лицензии</strong>
+                <span>За 30, 14 и 7 дней до окончания</span>
+              </div>
+              <label class="toggle"><input type="checkbox" checked /><span class="toggle-slider"></span></label>
+            </div>
+            <div class="setting-row">
+              <div class="setting-info">
+                <strong>Новая организация</strong>
+                <span>При добавлении нового клиента</span>
+              </div>
+              <label class="toggle"><input type="checkbox" checked /><span class="toggle-slider"></span></label>
+            </div>
+            <div class="setting-row">
+              <div class="setting-info">
+                <strong>Критические ошибки</strong>
+                <span>Сбои сервисов и события безопасности</span>
+              </div>
+              <label class="toggle"><input type="checkbox" checked /><span class="toggle-slider"></span></label>
+            </div>
+            <div class="setting-row">
+              <div class="setting-info">
+                <strong>Еженедельный отчёт</strong>
+                <span>Сводка активности каждый понедельник</span>
+              </div>
+              <label class="toggle"><input type="checkbox" /><span class="toggle-slider"></span></label>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="settings-section">
+            <p class="settings-section-title">Push-уведомления</p>
+            <div class="setting-row">
+              <div class="setting-info">
+                <strong>Браузерные уведомления</strong>
+                <span>Мгновенные оповещения в браузере</span>
+              </div>
+              <label class="toggle"><input type="checkbox" /><span class="toggle-slider"></span></label>
+            </div>
+            <div class="setting-row">
+              <div class="setting-info">
+                <strong>Звуковые оповещения</strong>
+                <span>Звук при получении уведомления</span>
+              </div>
+              <label class="toggle"><input type="checkbox" /><span class="toggle-slider"></span></label>
+            </div>
+          </div>
+
+          <div class="form-footer">
+            <button class="primary-btn">Сохранить</button>
+          </div>
+        </div>
+
+        <div class="settings-panel" id="tab-api">
+          <div class="settings-section">
+            <p class="settings-section-title">API-ключи</p>
+            <div class="setting-row">
+              <div class="setting-info">
+                <strong>Production Key</strong>
+                <span>sk_live_••••••••••••••••3f2a &nbsp;·&nbsp; Создан 01.01.2026</span>
+              </div>
+              <div class="api-key-actions">
+                <button class="ghost-btn">Копировать</button>
+                <button class="ghost-btn remove">Отозвать</button>
+              </div>
+            </div>
+            <div class="setting-row">
+              <div class="setting-info">
+                <strong>Test Key</strong>
+                <span>sk_test_••••••••••••••••9c1d &nbsp;·&nbsp; Создан 15.02.2026</span>
+              </div>
+              <div class="api-key-actions">
+                <button class="ghost-btn">Копировать</button>
+                <button class="ghost-btn remove">Отозвать</button>
+              </div>
+            </div>
+          </div>
+          <button class="primary-btn">+ Создать новый ключ</button>
+        </div>
+
+        <div class="settings-panel" id="tab-danger">
+          <div class="settings-section">
+            <p class="settings-section-title danger">⚠️ Панель для разработчиков</p>
+            <div class="setting-row">
+              <div class="setting-info">
+                <strong>Экспорт данных</strong>
+                <span>Скачать все данные аккаунта в формате JSON</span>
+              </div>
+              <button class="ghost-btn" style="white-space:nowrap;font-size:13px">Экспортировать</button>
+            </div>
+            <div class="setting-row">
+              <div class="setting-info">
+                <strong>Сбросить настройки</strong>
+                <span>Вернуть все параметры к значениям по умолчанию</span>
+              </div>
+              <button class="danger-btn" style="white-space:nowrap;font-size:13px">Сбросить</button>
+            </div>
+            <div class="setting-row">
+              <div class="setting-info">
+                <strong>Удалить аккаунт</strong>
+                <span>Безвозвратно удалить аккаунт и все связанные данные</span>
+              </div>
+              <button class="danger-btn" style="white-space:nowrap;font-size:13px">Удалить аккаунт</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+  function showTab(name, el) {
+    document.querySelectorAll('.settings-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.settings-nav-item').forEach(i => i.classList.remove('active'));
+    document.getElementById('tab-' + name).classList.add('active');
+    el.classList.add('active');
+  }
+</script>
+
+</body>
+</html>

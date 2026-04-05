@@ -1,12 +1,14 @@
 from typing import Annotated
 
-from fastapi import Depends
+from fastapi import Depends, APIRouter
 
 from sqlmodel import SQLModel, select
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sessionmaker
 
 from modules.users.models import User
 from modules.licenses.models import License
+
+router = APIRouter(prefix="/db", tags=["db"])
 
 engine = create_async_engine("sqlite+aiosqlite:///data.db")
 new_session = async_sessionmaker(engine, expire_on_commit=False)
@@ -28,8 +30,12 @@ async def get_user(session: AsyncSession, username: str):
     user = result.scalars().first()
     return user
 
-async def get_licenses(session: AsyncSession):
+async def get_license(session: AsyncSession):
     result = await session.execute(
         ...
     )
 
+@router.post('/setup')
+async def setup_database():
+    await create_db_and_tables()
+    return {"ok": True}

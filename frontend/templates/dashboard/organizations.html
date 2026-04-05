@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Организации</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/organizations.css" />
+</head>
+<body>
+
+<div class="app">
+  <aside class="sidebar">
+    <div>
+      <div class="logo">
+        <img src="/static/img/logo.svg" alt="logo" class="logo">
+      </div>
+      <nav class="menu">
+        <a href="/licenses" class="menu-item">
+          <span>🔑</span> Лицензии
+        </a>
+        <a href="/organizations" class="menu-item active">
+          <span>🏢</span> Организации
+        </a>
+        <a href="/settings" class="menu-item">
+          <span>⚙️</span> Настройки
+        </a>
+      </nav>
+    </div>
+    <div class="sidebar-footer">
+      <div class="user-badge">А</div>
+      <button class="logout">Выйти</button>
+    </div>
+  </aside>
+
+  <main class="content">
+
+    <header class="topbar">
+      <div>
+        <h1>Организации</h1>
+        <span class="status">12 активных</span>
+      </div>
+      <div class="topbar-actions">
+        <select>
+          <option>Все статусы</option>
+          <option>Активные</option>
+          <option>Истекают</option>
+          <option>Просрочены</option>
+          <option>Заблокированы</option>
+        </select>
+        <input type="search" placeholder="Поиск организации…" />
+      </div>
+    </header>
+
+    <section class="stats-grid">
+      <article class="card stat-card">
+        <p class="card-label">Всего организаций</p>
+        <h2>12</h2>
+        <span>+2 за этот месяц</span>
+      </article>
+      <article class="card stat-card">
+        <p class="card-label">Активных лицензий</p>
+        <h2>96</h2>
+        <span>Из 128 выдано</span>
+      </article>
+      <article class="card stat-card">
+        <p class="card-label">Истекают скоро</p>
+        <h2 style="color:var(--warning)">4</h2>
+        <span>В течение 30 дней</span>
+      </article>
+    </section>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Организация</th>
+            <th>ИНН</th>
+            <th>Лицензии</th>
+            <th>Тариф</th>
+            <th>Статус</th>
+            <th>Дата окончания</th>
+            <th>Действия</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td data-label="Организация">
+              <strong>ООО «Альфа Технологии»</strong>
+              <small>info@alpha-tech.ru</small>
+            </td>
+            <td data-label="ИНН">7701234567</td>
+            <td data-label="Лицензии">24 / 30</td>
+            <td data-label="Тариф"><span class="badge badge-purple">Enterprise</span></td>
+            <td data-label="Статус"><span class="badge badge-active">Активна</span></td>
+            <td data-label="Окончание">12.01.2027</td>
+            <td data-label="Действия">
+              <div class="table-actions">
+                <button class="icon-btn" title="Редактировать">✏️</button>
+                <button class="icon-btn" title="Лицензии">🔑</button>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td data-label="Организация">
+              <strong>АО «Берег Системы»</strong>
+              <small>admin@bereg.io</small>
+            </td>
+            <td data-label="ИНН">7709876543</td>
+            <td data-label="Лицензии">8 / 10</td>
+            <td data-label="Тариф"><span class="badge badge-active">Pro</span></td>
+            <td data-label="Статус"><span class="badge badge-active">Активна</span></td>
+            <td data-label="Окончание">30.03.2027</td>
+            <td data-label="Действия">
+              <div class="table-actions">
+                <button class="icon-btn">✏️</button>
+                <button class="icon-btn">🔑</button>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td data-label="Организация">
+              <strong>ГБУ «Инфра-Центр»</strong>
+              <small>it@infra.gov.ru</small>
+            </td>
+            <td data-label="ИНН">7720001122</td>
+            <td data-label="Лицензии">15 / 20</td>
+            <td data-label="Тариф"><span class="badge badge-purple">Enterprise</span></td>
+            <td data-label="Статус"><span class="badge badge-warn">Истекает</span></td>
+            <td data-label="Окончание">15.04.2026</td>
+            <td data-label="Действия">
+              <div class="table-actions">
+                <button class="icon-btn">✏️</button>
+                <button class="icon-btn">🔑</button>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td data-label="Организация">
+              <strong>ИП Сидоров К.Ю.</strong>
+              <small>k.sidorov@mail.ru</small>
+            </td>
+            <td data-label="ИНН">772398765</td>
+            <td data-label="Лицензии">1 / 5</td>
+            <td data-label="Тариф"><span class="badge badge-neutral">Starter</span></td>
+            <td data-label="Статус"><span class="badge badge-active">Активна</span></td>
+            <td data-label="Окончание">01.09.2026</td>
+            <td data-label="Действия">
+              <div class="table-actions">
+                <button class="icon-btn">✏️</button>
+                <button class="icon-btn">🔑</button>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td data-label="Организация">
+              <strong>ООО «ДатаЛайн»</strong>
+              <small>cto@dataline.tech</small>
+            </td>
+            <td data-label="ИНН">7750012398</td>
+            <td data-label="Лицензии">48 / 50</td>
+            <td data-label="Тариф"><span class="badge badge-purple">Enterprise</span></td>
+            <td data-label="Статус"><span class="badge badge-danger">Просрочена</span></td>
+            <td data-label="Окончание">28.02.2026</td>
+            <td data-label="Действия">
+              <div class="table-actions">
+                <button class="icon-btn">✏️</button>
+                <button class="icon-btn">🔑</button>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td data-label="Организация">
+              <strong>ЗАО «КиберГард»</strong>
+              <small>security@cyberguard.ru</small>
+            </td>
+            <td data-label="ИНН">7734009812</td>
+            <td data-label="Лицензии">12 / 15</td>
+            <td data-label="Тариф"><span class="badge badge-active">Pro</span></td>
+            <td data-label="Статус"><span class="badge badge-active">Активна</span></td>
+            <td data-label="Окончание">20.11.2026</td>
+            <td data-label="Действия">
+              <div class="table-actions">
+                <button class="icon-btn">✏️</button>
+                <button class="icon-btn">🔑</button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="pagination">
+        <span>Показано 6 из 12</span>
+        <div class="page-btns">
+          <button class="page-btn active">1</button>
+          <button class="page-btn">2</button>
+          <button class="page-btn">›</button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<div class="modal-overlay" id="orgModal">
+  <div class="modal">
+    <h2>Добавить организацию</h2>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Название *</label>
+        <input type="text" placeholder="ООО «Название»" />
+      </div>
+      <div class="form-group">
+        <label>ИНН *</label>
+        <input type="text" placeholder="7700000000" />
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Email контакта</label>
+      <input type="email" placeholder="admin@company.ru" />
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Тариф</label>
+        <select>
+          <option>Starter</option>
+          <option>Pro</option>
+          <option selected>Enterprise</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Количество лицензий</label>
+        <input type="number" placeholder="10" min="1" />
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Дата окончания</label>
+      <input type="text" placeholder="ДД.ММ.ГГГГ" />
+    </div>
+    <div class="modal-footer">
+      <button class="ghost-btn" onclick="closeModal()">Отмена</button>
+      <button class="primary-btn">Добавить</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  function openModal()  { document.getElementById('orgModal').classList.add('open'); }
+  function closeModal() { document.getElementById('orgModal').classList.remove('open'); }
+
+  document.getElementById('orgModal').addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
+  });
+
+  document.querySelectorAll('.page-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.page-btn').forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+    });
+  });
+</script>
+
+</body>
+</html>
