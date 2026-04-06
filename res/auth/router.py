@@ -76,7 +76,6 @@ def refresh_access_token(
     if payload.get("type") != "refresh":
         raise HTTPException(status_code=401, detail="Неверный тип токена")
 
-    username = users_db.get
     sub = payload.get("sub")
 
     user = next((u for u in users_db.values() if str(u.id) == sub), None)
@@ -87,11 +86,11 @@ def refresh_access_token(
     new_access_token = auth_utils.encode_jwt(new_payload)
 
     response.set_cookie(
-        key="access_token",
-        value=new_access_token,
+        key="refresh_token",
+        value=refresh_token,
         httponly=True,
         samesite="lax",
-        max_age=60 * 15,
+        max_age=60 * 60 * 24 * 7,
         path="/",
     )
 
