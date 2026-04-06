@@ -5,10 +5,6 @@ let allLicenses  = [];
 let currentPage  = 1;
 let currentKeyId = null;
 
-/* ══════════════════════════════════════════
-   ЗАГРУЗКА ДАННЫХ
-══════════════════════════════════════════ */
-
 async function loadLicenses() {
   try {
     const response = await fetch('/licenses/?limit=100');
@@ -21,10 +17,6 @@ async function loadLicenses() {
     showTableError('Ошибка соединения с сервером');
   }
 }
-
-/* ══════════════════════════════════════════
-   РЕНДЕР СТРАНИЦЫ
-══════════════════════════════════════════ */
 
 function renderPage() {
   const filtered = getFiltered();
@@ -44,9 +36,6 @@ function renderPage() {
     total ? `Показано ${shown} из ${total}` : 'Нет данных';
 }
 
-/* ══════════════════════════════════════════
-   РЕНДЕР ТАБЛИЦЫ — кнопки ✏️ и 🔑
-══════════════════════════════════════════ */
 
 function renderTable(licenses) {
   const tbody = document.getElementById('licenseTableBody');
@@ -88,10 +77,6 @@ function renderTable(licenses) {
   `).join('');
 }
 
-/* ══════════════════════════════════════════
-   ПАГИНАЦИЯ
-══════════════════════════════════════════ */
-
 function renderPagination(total, pages) {
   const container = document.querySelector('.page-btns');
   if (pages <= 1) { container.innerHTML = ''; return; }
@@ -127,10 +112,6 @@ function goToPage(page) {
   currentPage = page;
   renderPage();
 }
-
-/* ══════════════════════════════════════════
-   МОДАЛ: РЕДАКТИРОВАНИЕ ✏️
-══════════════════════════════════════════ */
 
 function openEditModal(id) {
   const lic = allLicenses.find(l => l.id === id);
@@ -217,10 +198,6 @@ async function saveEdit() {
   }
 }
 
-/* ══════════════════════════════════════════
-   МОДАЛ: КЛЮЧ И КРЕДЫ 🔑
-══════════════════════════════════════════ */
-
 function openKeyModal(id) {
   const lic = allLicenses.find(l => l.id === id);
   if (!lic) return;
@@ -242,7 +219,6 @@ function regenerateKey() {
 }
 
 function generateKeyData(lic) {
-  // SHA-256 из данных лицензии + случайная соль
   const salt    = crypto.getRandomValues(new Uint8Array(16));
   const saltHex = Array.from(salt).map(b => b.toString(16).padStart(2, '0')).join('');
   const raw     = `${lic.id}|${lic.inn}|${lic.name}|${lic.mac}|${saltHex}`;
@@ -282,10 +258,6 @@ function copyField(id) {
   if (val) navigator.clipboard.writeText(val).catch(() => {});
 }
 
-/* ══════════════════════════════════════════
-   ФИЛЬТРАЦИЯ
-══════════════════════════════════════════ */
-
 function getFiltered() {
   const search = document.querySelector('input[type="search"]').value.toLowerCase();
   const status = document.querySelector('.topbar-actions select').value;
@@ -298,10 +270,6 @@ function getFiltered() {
     return matchText && matchStatus;
   });
 }
-
-/* ══════════════════════════════════════════
-   СТАТИСТИКА
-══════════════════════════════════════════ */
 
 function updateStats(licenses) {
   const total    = licenses.length;
@@ -322,10 +290,6 @@ function setStatCard(index, value, hint) {
   cards[index].querySelector('h2').textContent   = value;
   cards[index].querySelector('span').textContent = hint;
 }
-
-/* ══════════════════════════════════════════
-   ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
-══════════════════════════════════════════ */
 
 function escHtml(str) {
   if (!str) return '—';
@@ -377,10 +341,6 @@ function showTableError(message) {
     </tr>`;
 }
 
-/* ══════════════════════════════════════════
-   ИНИЦИАЛИЗАЦИЯ
-══════════════════════════════════════════ */
-
 document.addEventListener('DOMContentLoaded', () => {
   loadLicenses();
 
@@ -390,11 +350,23 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelector('.topbar-actions select')
     .addEventListener('change', () => { currentPage = 1; renderPage(); });
 
-  // Закрытие модалов по клику на оверлей
   ['editModal', 'keyModal'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.addEventListener('click', function(e) {
       if (e.target === this) this.classList.remove('open');
     });
   });
+});
+
+document.getElementById("logout-btn").addEventListener("click", async () => {
+    const response = await fetch("/login/logout", {
+        method: "POST",
+        credentials: "include"
+    });
+
+    if (response.redirected) {
+        window.location.href = response.url;
+    } else {
+        window.location.href = "/login/";
+    }
 });

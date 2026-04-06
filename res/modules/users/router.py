@@ -6,6 +6,7 @@ from typing import Annotated
 from database import SessionDep
 
 from auth.utils import hash_password
+from auth.services import get_current_user_from_cookie
 from modules.users.models import User, UserUpdate, UserPublic, UserCreate
 from exceptions import user_not_found
 
@@ -50,7 +51,12 @@ async def read_user(user_id: int, session: SessionDep):
     return user
 
 @router.patch("/{user_id}", response_model=UserPublic)
-async def update_user(user_id: int, user: UserUpdate, session: SessionDep):
+async def update_user(
+    user_id: int, 
+    user: UserUpdate, 
+    session: SessionDep,
+    current_user: User = Depends(get_current_user_from_cookie)
+    ):
     user_db = await session.get(User, user_id)
     if not user_db:
         raise user_not_found

@@ -30,7 +30,7 @@
     </div>
     <div class="sidebar-footer">
       <div class="user-badge">А</div>
-      <button class="logout">Выйти</button>
+      <button id="logout-btn" class="logout">Выйти</button>
     </div>
   </aside>
   <main class="content">
@@ -46,10 +46,10 @@
 
       <nav class="settings-nav">
         <div class="settings-nav-item active" onclick="showTab('profile', this)">
-          👤 Профиль
+          Профиль
         </div>
         <div class="settings-nav-item" onclick="showTab('security', this)">
-          🔒 Безопасность
+          Безопасность
         </div>
         <!--
         <div class="settings-nav-item" onclick="showTab('notifications', this)">
@@ -57,11 +57,11 @@
         </div>
         -->
         <div class="settings-nav-item" onclick="showTab('api', this)">
-          🔌 API-ключи
+          API-ключи
         </div>
-        <div class="settings-nav-item" onclick="showTab('danger', this)">
+        <!-- <div class="settings-nav-item" onclick="showTab('danger', this)">
           ⚠️ Опасная зона
-        </div>
+        </div> -->
       </nav>
       <div>
         <div class="settings-panel active" id="tab-profile">
@@ -79,11 +79,7 @@
             <div class="form-row">
               <div class="form-group">
                 <label>Имя</label>
-                <input type="text" value="Алексей" />
-              </div>
-              <div class="form-group">
-                <label>Фамилия</label>
-                <input type="text" value="Петров" />
+                <input type="text" />
               </div>
             </div>
             <div class="form-group">
@@ -134,7 +130,7 @@
                 <span class="toggle-slider"></span>
               </label>
             </div>
-            <div class="setting-row">
+            <!-- <div class="setting-row">
               <div class="setting-info">
                 <strong>SMS-подтверждение</strong>
                 <span>+7 (***) ***-**-42</span>
@@ -144,7 +140,7 @@
                 <span class="toggle-slider"></span>
               </label>
             </div>
-          </div>
+          </div> -->
 
           <div class="divider"></div>
 
@@ -156,24 +152,6 @@
                 <span>Москва • Сейчас активна</span>
               </div>
               <span class="badge badge-active session-current">Текущая</span>
-            </div>
-            <div class="setting-row">
-              <div class="setting-info">
-                <strong>iPhone 15 — Safari</strong>
-                <span>Москва • 2 часа назад</span>
-              </div>
-              <button class="ghost-btn" style="font-size:12px;padding:6px 12px;min-height:32px;color:var(--danger)">
-                Завершить
-              </button>
-            </div>
-            <div class="setting-row">
-              <div class="setting-info">
-                <strong>Windows PC — Chrome</strong>
-                <span>Санкт-Петербург • Вчера, 18:42</span>
-              </div>
-              <button class="ghost-btn" style="font-size:12px;padding:6px 12px;min-height:32px;color:var(--danger)">
-                Завершить
-              </button>
             </div>
           </div>
         </div>
@@ -261,9 +239,9 @@
             </div>
           </div>
           <button class="primary-btn">+ Создать новый ключ</button>
-        </div>
+        </div>  
 
-        <div class="settings-panel" id="tab-danger">
+        <!-- <div class="settings-panel" id="tab-danger">
           <div class="settings-section">
             <p class="settings-section-title danger">⚠️ Панель для разработчиков</p>
             <div class="setting-row">
@@ -288,7 +266,7 @@
               <button class="danger-btn" style="white-space:nowrap;font-size:13px">Удалить аккаунт</button>
             </div>
           </div>
-        </div>
+        </div> -->
 
       </div>
     </div>
@@ -296,14 +274,7 @@
   </main>
 </div>
 
-<script>
-  function showTab(name, el) {
-    document.querySelectorAll('.settings-panel').forEach(p => p.classList.remove('active'));
-    document.querySelectorAll('.settings-nav-item').forEach(i => i.classList.remove('active'));
-    document.getElementById('tab-' + name).classList.add('active');
-    el.classList.add('active');
-  }
-</script>
+<script src="/static/dashboard/settings.js"></script>
 
 </body>
 </html>

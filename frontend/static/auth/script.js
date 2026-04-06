@@ -30,7 +30,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 throw new Error(data.detail || "Ошибка авторизации");
             }
 
-            window.location.href = "/licenses";
+            window.location.href = "/main";
 
         } catch (error) {
             console.error("Ошибка:", error);
