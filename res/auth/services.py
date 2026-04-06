@@ -1,3 +1,6 @@
+from collections import defaultdict
+import time
+
 from fastapi import (
     Depends, 
     HTTPException,
@@ -25,6 +28,11 @@ from exceptions import (
     token_not_found,
 )
 
+_failed_attempts: dict[str, list[float]] = defaultdict(list)
+
+MAX_ATTEMPTS = 5 
+WINDOW_SECONDS = 60
+BLOCK_SECONDS = 300
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/jwt/login/")
 
@@ -39,25 +47,57 @@ harms = User(
     email="harms@example.com"
 )
 
+us = User(
+    id=2,
+    name="test",
+    username="user",
+    password=auth_utils.hash_password("user"),
+    disabled=False,
+    organization="ТехноСофт",
+    role="user",
+    email="user@example.com"
+)
+
 users_db: dict[str, User] = {
-    harms.username: harms
+    harms.username: harms,
+    us.username: us
 }
 
 def validate_auth_user(
+    request: Request,
     username: str = Form(),
     password: str = Form(),
 ):
+    ip = request.client.host
+    now = time.time()
+
+    _failed_attempts[ip] = [
+        t for t in _failed_attempts[ip]
+        if now - t < WINDOW_SECONDS
+    ]
+    if len(_failed_attempts[ip]) >= MAX_ATTEMPTS:
+        oldest = _failed_attempts[ip][0]
+        seconds_left = int(BLOCK_SECONDS - (now - oldest))
+        raise HTTPException(
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+            detail=f"Слишком много попыток. Попробуйте через {seconds_left} сек.",
+        )
+
     if not (user := users_db.get(username)):
+        _failed_attempts[ip].append(now)
         raise invalid_username_or_password
-    
+
     if not auth_utils.validate_password(
         password=password,
         hashed_password=user.password,
     ):
+        _failed_attempts[ip].append(now)
         raise invalid_username_or_password
-    
-    if user.disabled: 
+
+    if user.disabled:
         raise user_is_disabled
+
+    _failed_attempts.pop(ip, None)
     return user
 
 def get_current_token_payload(

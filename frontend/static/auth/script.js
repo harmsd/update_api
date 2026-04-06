@@ -17,20 +17,21 @@ document.addEventListener("DOMContentLoaded", () => {
         formData.append("password", password);
 
         try {
-            const response = await fetch("http://127.0.0.1:8000/jwt/login", {
+            const response = await fetch("/jwt/login", {
                 method: "POST",
                 headers: { "Content-Type": "application/x-www-form-urlencoded" },
                 body: formData,
-                credentials: "include"
+                credentials: "include",
+                redirect: "manual",
             });
 
-            const data = await response.json();
-
-            if (!response.ok) {
-                throw new Error(data.detail || "Ошибка авторизации");
+            if (response.ok || response.type === "opaqueredirect") {
+                window.location.href = "/main/";
+                return;
             }
 
-            window.location.href = "/main";
+            const data = await response.json();
+            throw new Error(data.detail || "Ошибка авторизации");
 
         } catch (error) {
             console.error("Ошибка:", error);
