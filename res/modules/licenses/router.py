@@ -25,7 +25,11 @@ async def upload_enc(file: UploadFile = File(...)):
     return content
 
 @router.post("/", response_model=LicensePublic)
-async def create_license(payload: LicenseFromFront, session: SessionDep):
+async def create_license(
+    payload: LicenseFromFront, 
+    session: SessionDep,
+    
+    ):
 
     try:
         end_date = datetime.strptime(payload.organization.expiry, "%d.%m.%Y").date() \
