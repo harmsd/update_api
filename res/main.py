@@ -13,7 +13,9 @@ from auth.router import jwt_router
 from dashboard.router import router as main_router
 from dashboard.router import organizations_router
 from dashboard.router import settings_router
-from update.router import router as update_router
+from update.router import updates_router
+from update.router import license_router
+from update.router import support_router
 
 origins = [
     "http://127.0.0.1",
@@ -32,7 +34,10 @@ app.include_router(organizations_router)
 app.include_router(settings_router)
 app.include_router(auth_router)
 app.include_router(jwt_router)
-app.include_router(update_router)
+app.include_router(updates_router)
+app.include_router(license_router)
+app.include_router(support_router)
+
 
 app.add_middleware(
     CORSMiddleware,

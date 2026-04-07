@@ -218,3 +218,16 @@ def get_current_user_from_cookie(request: Request) -> User:
         status_code=status.HTTP_307_TEMPORARY_REDIRECT,
         headers={"Location": "/login/"},
     )
+
+def require_role(*roles: str):
+    def dependency(user: User = Depends(get_current_user_from_cookie)) -> User:
+        if user.role not in roles:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Недостаточно прав",
+            )
+        return user
+    return dependency
+
+require_admin = require_role("admin")
+require_user  = require_role("user", "admin")

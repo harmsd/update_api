@@ -32,9 +32,9 @@ async def login(request: Request):
             pass
     return FileResponse("../frontend/templates/auth/login.html")
 
-@jwt_router.post("/login")
+@jwt_router.post("/login", response_model=TokenData)
 def auth_user_issue_jwt(
-    request: Request,
+    response: Response,                        # ← Response, не Request
     user: User = Depends(validate_auth_user),
 ):
     jwt_payload = {
@@ -46,34 +46,17 @@ def auth_user_issue_jwt(
     access_token = auth_utils.encode_jwt(jwt_payload)
     refresh_token = auth_utils.encode_refresh_jwt(jwt_payload)
 
-    redirect = RedirectResponse(url="/main/", status_code=303)
-
-    redirect.set_cookie(
-        key="access_token",
-        value=access_token,
-        httponly=True,
-        samesite="lax",
-        max_age=60 * 15,
-        path="/",
-    )
-    redirect.set_cookie(
-        key="refresh_token",
-        value=refresh_token,
-        httponly=True,
-        samesite="lax",
-        max_age=60 * 60 * 24 * 7,
-        path="/",
-    )
-
-    redirect_url = "/main/" if user.role == "admin" else "/updates/"
-    redirect = RedirectResponse(url=redirect_url, status_code=303)
-
-    redirect.set_cookie(key="access_token", value=access_token,
+    response.set_cookie(key="access_token", value=access_token,
                         httponly=True, samesite="lax", max_age=60*15, path="/")
-    redirect.set_cookie(key="refresh_token", value=refresh_token,
+    response.set_cookie(key="refresh_token", value=refresh_token,
                         httponly=True, samesite="lax", max_age=60*60*24*7, path="/")
 
-    return redirect
+    return TokenData(
+        access_token=access_token,
+        refresh_token=refresh_token,
+        token_type="Bearer",
+        role=user.role,
+    )
 
 @jwt_router.post("/refresh", response_model=TokenData)
 def refresh_access_token(
