@@ -7,7 +7,7 @@ let currentKeyId = null;
 
 async function loadLicenses() {
   try {
-    const response = await fetch('/licenses/?limit=100');
+    const response = await fetchWithRefresh('/licenses/?limit=100');
     if (!response.ok) { showTableError('Не удалось загрузить данные'); return; }
     allLicenses = await response.json();
     currentPage = 1;
@@ -174,7 +174,7 @@ async function saveEdit() {
   };
 
   try {
-    const res = await fetch(`/licenses/${id}`, {
+    const res = await fetchWithRefresh(`/licenses/${id}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)

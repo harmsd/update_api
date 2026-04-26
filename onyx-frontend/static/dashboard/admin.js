@@ -14,14 +14,7 @@ async function loadUsers() {
       throw new Error('API unavailable');
     }
   } catch {
-    // Fallback mock data
-    allUsers = [
-      { id:1, username:'admin',        first_name:'Алексей', email:'admin@pentest.local',  role:'admin',    active:true,  created:'2025-01-01' },
-      { id:2, username:'operator1',    first_name:'Мария',   email:'maria@pentest.local',   role:'operator', active:true,  created:'2025-03-15' },
-      { id:3, username:'viewer_ivanov',first_name:'Иван',    email:'ivanov@corp.ru',        role:'viewer',   active:false, created:'2025-06-10' },
-      { id:4, username:'analyst_k',    first_name:'Карина',  email:'karina@corp.ru',        role:'operator', active:true,  created:'2026-01-20' },
-      { id:5, username:'guest_test',   first_name:'Тест',    email:'test@local',            role:'viewer',   active:false, created:'2026-02-01' },
-    ];
+    allUsers = [];
   }
   currentPage = 1;
   updateStats();
@@ -33,7 +26,7 @@ function getFiltered() {
   const q    = (document.getElementById('searchInput')?.value || '').toLowerCase();
   const role = document.getElementById('roleFilter')?.value || '';
   return allUsers.filter(u => {
-    const txt = [u.username, u.first_name, u.email].join(' ').toLowerCase();
+    const txt = [u.username, u.name, u.email].join(' ').toLowerCase();
     return txt.includes(q) && (!role || u.role === role);
   });
 }
@@ -41,7 +34,7 @@ function getFiltered() {
 /* ─── Stats ─── */
 function updateStats() {
   const total  = allUsers.length;
-  const active = allUsers.filter(u => u.active).length;
+  const active = allUsers.filter(u => !u.disabled).length;
   const admins = allUsers.filter(u => u.role === 'admin').length;
   setText('statTotal',  total);
   setText('statActive', active);
@@ -86,17 +79,17 @@ function renderTable(users) {
       <td>
         <div style="display:flex;align-items:center;gap:10px">
           <div class="user-avatar" style="background:${roleBg(u.role)};border:1px solid rgba(255,255,255,0.06);color:${roleColor(u.role)}">
-            ${(u.first_name || '?')[0].toUpperCase()}
+            ${(u.name || '?')[0].toUpperCase()}
           </div>
-          <strong style="font-weight:500">${escHtml(u.first_name)}</strong>
+          <strong style="font-weight:500">${escHtml(u.name)}</strong>
         </div>
       </td>
       <td style="font-family:monospace;font-size:12px;color:var(--muted)">${escHtml(u.username)}</td>
       <td style="color:var(--muted)">${escHtml(u.email)}</td>
       <td><span class="badge" style="background:${roleBg(u.role)};color:${roleColor(u.role)}">${roleLabel(u.role)}</span></td>
       <td>
-        <span class="badge" style="background:${u.active?'var(--green-dim)':'rgba(255,255,255,0.05)'};color:${u.active?'var(--green)':'var(--muted)'}">
-          ${u.active ? 'Активен' : 'Отключён'}
+        <span class="badge" style="background:${!u.disabled?'var(--green-dim)':'rgba(255,255,255,0.05)'};color:${!u.disabled?'var(--green)':'var(--muted)'}">
+          ${!u.disabled ? 'Активен' : 'Отключён'}
         </span>
       </td>
       <td style="color:var(--muted);font-size:12px">${formatDate(u.created)}</td>
@@ -105,9 +98,9 @@ function renderTable(users) {
           <button class="icon-btn" title="Редактировать" onclick="openEditModal(${u.id})">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
           </button>
-          <button class="icon-btn ${u.active ? 'warn' : ''}" title="${u.active ? 'Отключить' : 'Включить'}" onclick="toggleActive(${u.id})">
+          <button class="icon-btn ${!u.disabled ? 'warn' : ''}" title="${!u.disabled ? 'Отключить' : 'Включить'}" onclick="toggleActive(${u.id})">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-              ${u.active
+              ${!u.disabled
                 ? '<path d="M18.364 18.364A9 9 0 0 0 5.636 5.636m12.728 12.728A9 9 0 0 1 5.636 5.636m12.728 12.728L5.636 5.636"/>'
                 : '<path d="M20 6L9 17l-5-5"/>'}
             </svg>
@@ -142,15 +135,15 @@ function goToPage(page) {
 async function toggleActive(id) {
   const user = allUsers.find(u => u.id === id);
   if (!user) return;
-  const newActive = !user.active;
+  const newDisabled = !user.disabled;
   try {
     await fetchWithRefresh(`/users/${id}`, {
       method:  'PATCH',
       headers: { 'Content-Type': 'application/json' },
-      body:    JSON.stringify({ active: newActive }),
+      body:    JSON.stringify({ disabled: newDisabled }),
     });
   } catch {}
-  user.active = newActive;
+  user.disabled = newDisabled;
   updateStats();
   renderPage();
 }
@@ -171,8 +164,8 @@ function openEditModal(id) {
   const u = allUsers.find(u => u.id === id);
   if (!u) return;
   document.getElementById('editId').value       = u.id;
-  document.getElementById('editName').value     = u.first_name || '';
-  document.getElementById('editUsername').value = u.username   || '';
+  document.getElementById('editName').value     = u.name     || '';
+  document.getElementById('editUsername').value = u.username || '';
   document.getElementById('editEmail').value    = u.email      || '';
   document.getElementById('editRole').value     = u.role       || 'viewer';
   document.getElementById('editPassword').value = '';
@@ -187,13 +180,12 @@ function closeEditModal() {
 async function saveEdit() {
   const id      = parseInt(document.getElementById('editId').value);
   const payload = {
-    first_name: document.getElementById('editName').value.trim(),
-    username:   document.getElementById('editUsername').value.trim(),
-    email:      document.getElementById('editEmail').value.trim(),
-    role:       document.getElementById('editRole').value,
+    name:  document.getElementById('editName').value.trim(),
+    email: document.getElementById('editEmail').value.trim(),
+    role:  document.getElementById('editRole').value,
   };
   const pw = document.getElementById('editPassword').value;
-  if (pw) payload.password = pw;
+  if (pw) payload.password_string = pw;
 
   try {
     const res = await fetchWithRefresh(`/users/${id}`, {
@@ -239,11 +231,12 @@ async function createUser() {
   btn.textContent = 'Создание…';
 
   const payload = {
-    first_name: document.getElementById('createName').value.trim(),
+    name:            document.getElementById('createName').value.trim(),
     username,
     email,
-    role:     document.getElementById('createRole').value,
-    password: document.getElementById('createPassword').value,
+    role:            document.getElementById('createRole').value,
+    password_string: document.getElementById('createPassword').value,
+    organization:    '',
   };
 
   try {

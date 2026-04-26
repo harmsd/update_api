@@ -52,7 +52,7 @@ async function uploadAndParseLicense(file) {
   formData.append('file', file);
 
   try {
-    const response = await fetch('/licenses/upload-enc', {
+    const response = await fetchWithRefresh('/licenses/upload-enc', {
       method: 'POST',
       body: formData
     });
@@ -229,7 +229,7 @@ async function submitForm() {
   };
 
   try {
-    const response = await fetch('/licenses', {
+    const response = await fetchWithRefresh('/licenses', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
