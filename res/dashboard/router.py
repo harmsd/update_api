@@ -8,6 +8,7 @@ from modules.users.models import User
 router = APIRouter(prefix="/main", tags=["main"])
 organizations_router = APIRouter(prefix="/organizations", tags=["organizations"])
 settings_router = APIRouter(prefix="/settings", tags=["settings"])
+admin_router = APIRouter(prefix="/admin", tags=["admin"])
 
 templates = Jinja2Templates(directory="../onyx-frontend/templates")
 
@@ -53,5 +54,20 @@ async def licenses_page(
         context={
             "user": current_user,
             "sidebar": "/partials/_sidebar_admin.html"
+        }
+    )
+
+
+@admin_router.get("/", response_class=HTMLResponse)
+async def admin_users_page(
+    request: Request,
+    current_user: User = Depends(require_admin),
+):
+    return templates.TemplateResponse(
+        request=request,
+        name="/dashboard/admin.html",
+        context={
+            "user": current_user,
+            "sidebar": "/partials/_sidebar_admin.html",
         }
     )

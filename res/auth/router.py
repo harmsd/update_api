@@ -6,12 +6,11 @@ from modules.users.models import User
 from auth import utils as auth_utils
 from auth.services import validate_auth_user, get_current_active_auth_user
 from auth.models import TokenData
-from auth.services import users_db
+from database import SessionDep, get_user_by_id
+from config import settings
 
 jwt_router = APIRouter(prefix="/jwt", tags=["JWT"])
 auth_router = APIRouter(prefix="/login", tags=["auth"])
-
-_SECURE_COOKIES = True  # set False only in local dev without HTTPS
 
 @auth_router.get("/")
 async def login(request: Request):
@@ -29,7 +28,7 @@ async def login(request: Request):
     return FileResponse("../onyx-frontend/templates/auth/login.html")
 
 @jwt_router.post("/login", response_model=TokenData)
-def auth_user_issue_jwt(
+async def auth_user_issue_jwt(
     response: Response,
     user: User = Depends(validate_auth_user),
 ):
@@ -44,12 +43,12 @@ def auth_user_issue_jwt(
 
     response.set_cookie(
         key="access_token", value=access_token,
-        httponly=True, samesite="lax", secure=_SECURE_COOKIES,
+        httponly=True, samesite="lax", secure=settings.secure_cookies,
         max_age=60 * 15, path="/",
     )
     response.set_cookie(
         key="refresh_token", value=refresh_token,
-        httponly=True, samesite="lax", secure=_SECURE_COOKIES,
+        httponly=True, samesite="lax", secure=settings.secure_cookies,
         max_age=60 * 60 * 24 * 7, path="/",
     )
 
@@ -61,9 +60,10 @@ def auth_user_issue_jwt(
     )
 
 @jwt_router.post("/refresh", response_model=TokenData)
-def refresh_access_token(
+async def refresh_access_token(
     request: Request,
     response: Response,
+    session: SessionDep,
 ):
     refresh_token = request.cookies.get("refresh_token")
     if not refresh_token:
@@ -78,7 +78,12 @@ def refresh_access_token(
         raise HTTPException(status_code=401, detail="Неверный тип токена")
 
     sub = payload.get("sub")
-    user = next((u for u in users_db.values() if str(u.id) == sub), None)
+    try:
+        user_id = int(sub)
+    except (TypeError, ValueError):
+        raise HTTPException(status_code=401, detail="Refresh token недействителен")
+
+    user = await get_user_by_id(session, user_id)
     if not user or user.disabled:
         raise HTTPException(status_code=401, detail="Пользователь не найден")
 
@@ -88,12 +93,12 @@ def refresh_access_token(
 
     response.set_cookie(
         key="access_token", value=new_access_token,
-        httponly=True, samesite="lax", secure=_SECURE_COOKIES,
+        httponly=True, samesite="lax", secure=settings.secure_cookies,
         max_age=60 * 15, path="/",
     )
     response.set_cookie(
         key="refresh_token", value=new_refresh_token,
-        httponly=True, samesite="lax", secure=_SECURE_COOKIES,
+        httponly=True, samesite="lax", secure=settings.secure_cookies,
         max_age=60 * 60 * 24 * 7, path="/",
     )
 

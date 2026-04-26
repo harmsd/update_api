@@ -1,10 +1,12 @@
+from contextlib import asynccontextmanager
+
 from fastapi.staticfiles import StaticFiles
 import uvicorn
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from database import router as db_router
+from database import router as db_router, create_db_and_tables
 from modules.users.router import router as users_router
 from modules.licenses.router import router as licenses_router
 from home.router import router as home_router
@@ -13,6 +15,7 @@ from auth.router import jwt_router
 from dashboard.router import router as main_router
 from dashboard.router import organizations_router
 from dashboard.router import settings_router
+from dashboard.router import admin_router
 from update.router import updates_router
 from update.router import license_router
 from update.router import support_router
@@ -22,7 +25,12 @@ origins = [
     "http://127.0.0.1:8000",
 ]
 
-app = FastAPI()
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    await create_db_and_tables()
+    yield
+
+app = FastAPI(lifespan=lifespan)
 app.mount("/static", StaticFiles(directory="../onyx-frontend/static"), name="static")
 
 app.include_router(db_router)
@@ -32,6 +40,7 @@ app.include_router(home_router)
 app.include_router(main_router)
 app.include_router(organizations_router)
 app.include_router(settings_router)
+app.include_router(admin_router)
 app.include_router(auth_router)
 app.include_router(jwt_router)
 app.include_router(updates_router)

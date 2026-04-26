@@ -1,6 +1,5 @@
-from fastapi import File, HTTPException, Query, APIRouter, UploadFile
+from fastapi import Depends, File, HTTPException, Query, APIRouter, UploadFile
 from fastapi.responses import JSONResponse
-from sqlalchemy.ext.asyncio import AsyncSession
 from sqlmodel import select
 from typing import Annotated
 from datetime import datetime, date
@@ -8,28 +7,32 @@ import json
 
 from database import SessionDep
 from modules.licenses.models import *
+from modules.users.models import User
 from exceptions import user_not_found
 from dashboard.services import to_decrypt
+from auth.services import require_admin
 
 router = APIRouter(prefix="/licenses")
 
 @router.post("/upload-enc")
-async def upload_enc(file: UploadFile = File(...)):
+async def upload_enc(
+    file: UploadFile = File(...),
+    _: User = Depends(require_admin),
+):
     if not file.filename.lower().endswith(".enc"):
         raise HTTPException(status_code=400, detail="Allowed only .enc files")
     try:
         content = await to_decrypt(file)
     except json.JSONDecodeError:
         return JSONResponse({"error": "Incorrect file format"}, status_code=400)
-    
     return content
 
 @router.post("/", response_model=LicensePublic)
 async def create_license(
-    payload: LicenseFromFront, 
+    payload: LicenseFromFront,
     session: SessionDep,
-    
-    ):
+    _: User = Depends(require_admin),
+):
 
     try:
         end_date = datetime.strptime(payload.organization.expiry, "%d.%m.%Y").date() \
@@ -63,6 +66,7 @@ async def create_license(
 @router.get("/", response_model=list[LicensePublic])
 async def read_licenses(
     session: SessionDep,
+    _: User = Depends(require_admin),
     offset: int = 0,
     limit: Annotated[int, Query(le=100)] = 100,
 ):
@@ -72,7 +76,11 @@ async def read_licenses(
     return result.scalars().all()
 
 @router.get("/{license_id}", response_model=LicensePublic)
-async def read_license(license_id: int, session: SessionDep):
+async def read_license(
+    license_id: int,
+    session: SessionDep,
+    _: User = Depends(require_admin),
+):
     db_license = await session.get(License, license_id)
     if not db_license:
         raise user_not_found
@@ -83,6 +91,7 @@ async def update_license(
     license_id: int,
     payload: LicenseFromFront,
     session: SessionDep,
+    _: User = Depends(require_admin),
 ):
     db_license = await session.get(License, license_id)
     if not db_license:
@@ -119,7 +128,11 @@ async def update_license(
     return db_license
 
 @router.delete("/{license_id}")
-async def delete_license(license_id: int, session: SessionDep):
+async def delete_license(
+    license_id: int,
+    session: SessionDep,
+    _: User = Depends(require_admin),
+):
     db_license = await session.get(License, license_id)
     if not db_license:
         raise user_not_found

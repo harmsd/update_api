@@ -287,8 +287,10 @@ function updateStats(licenses) {
 function setStatCard(index, value, hint) {
   const cards = document.querySelectorAll('.stat-card');
   if (!cards[index]) return;
-  cards[index].querySelector('h2').textContent   = value;
-  cards[index].querySelector('span').textContent = hint;
+  const valEl  = cards[index].querySelector('.stat-value');
+  const hintEl = cards[index].querySelector('.stat-hint');
+  if (valEl)  valEl.textContent  = value;
+  if (hintEl) hintEl.textContent = hint;
 }
 
 function escHtml(str) {

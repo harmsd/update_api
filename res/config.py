@@ -13,5 +13,6 @@ class AuthJWT(BaseModel):
 
 class Settings(BaseSettings):
     auth_jwt: AuthJWT = AuthJWT()
+    secure_cookies: bool = False  # set SECURE_COOKIES=true in production (requires HTTPS)
 
 settings = Settings()

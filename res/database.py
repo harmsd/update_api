@@ -23,12 +23,12 @@ async def create_db_and_tables():
     async with engine.begin() as conn:
         await conn.run_sync(SQLModel.metadata.create_all)
 
-async def get_user(session: AsyncSession, username: str):
-    result = await session.execute(
-        select(User).where(User.username == username)
-    )
-    user = result.scalars().first()
-    return user
+async def get_user_by_username(session: AsyncSession, username: str) -> User | None:
+    result = await session.execute(select(User).where(User.username == username))
+    return result.scalars().first()
+
+async def get_user_by_id(session: AsyncSession, user_id: int) -> User | None:
+    return await session.get(User, user_id)
 
 async def get_license(session: AsyncSession):
     result = await session.execute(
