@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Обновления</title>
+  <link rel="stylesheet" href="/static/css/update.css"/>
+  <link rel="stylesheet" href="/static/css/updates.css"/>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <img src="/static/img/logo.svg" alt="logo" class="logo">
+      </div>
+      <nav class="menu">
+        <a class="menu-item active" href="/updates">Обновления</a>
+        <a class="menu-item" href="/license">Лицензия</a>
+        <a class="menu-item" href="/support">Поддержка</a>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="user-badge">П</div>
+        <button class="logout" id="logout-btn">Выход</button>
+      </div>
+    </aside>
+
+    <main class="content">
+      <header class="topbar">
+        <div>
+          <h1>Обновление дистрибутива</h1>
+        </div>
+        <div class="topbar-actions">
+          <input type="search" id="searchInput" placeholder="Поиск версии..." />
+          <button class="primary-btn" onclick="filterUpdates()">Найти</button>
+        </div>
+      </header>
+
+      <div class="updates-grid">
+
+        <div class="card current-card">
+          <div class="current-label">Текущая версия</div>
+          <div class="current-version">v3.2.1</div>
+          <div class="current-date">Установлено: 15.03.2026</div>
+          <div class="badge badge-ok">✔ Актуально</div>
+        </div>
+
+        <section class="card">
+          <div class="section-header">
+            <div>
+              <h3>Доступные версии</h3>
+              <p>Выберите нужную версию для скачивания</p>
+            </div>
+          </div>
+
+          <ul class="update-list" id="updateList">
+            <li data-version="v3.2.1">
+              <div class="update-info">
+                <span class="ver-badge badge-latest">Последняя</span>
+                <strong>v3.2.1</strong>
+                <small>Дата: 15.03.2026</small>
+              </div>
+              <div class="actions">
+                <button class="ghost-btn" onclick="showChangelog('v3.2.1')">Подробнее</button>
+                <button class="primary-btn">⬇ Скачать</button>
+              </div>
+            </li>
+
+            <li data-version="v3.1.8">
+              <div class="update-info">
+                <strong>v3.1.8</strong>
+                <small>Дата: 02.02.2026</small>
+              </div>
+              <div class="actions">
+                <button class="ghost-btn" onclick="showChangelog('v3.1.8')">Подробнее</button>
+                <button class="primary-btn">⬇ Скачать</button>
+              </div>
+            </li>
+
+            <li data-version="v3.0.5">
+              <div class="update-info">
+                <strong>v3.0.5</strong>
+                <small>Дата: 18.12.2025</small>
+              </div>
+              <div class="actions">
+                <button class="ghost-btn" onclick="showChangelog('v3.0.5')">Подробнее</button>
+                <button class="primary-btn">⬇ Скачать</button>
+              </div>
+            </li>
+
+            <li data-version="v2.9.9">
+              <div class="update-info">
+                <strong>v2.9.9</strong>
+                <small>Дата: 01.11.2025</small>
+              </div>
+              <div class="actions">
+                <button class="ghost-btn" onclick="showChangelog('v2.9.9')">Подробнее</button>
+                <button class="primary-btn">⬇ Скачать</button>
+              </div>
+            </li>
+          </ul>
+        </section>
+
+      </div>
+
+      <div class="modal-overlay" id="modalOverlay" onclick="closeModal()">
+        <div class="modal" onclick="event.stopPropagation()">
+          <div class="modal-header">
+            <h3 id="modalTitle">Список изменений</h3>
+            <button class="modal-close" onclick="closeModal()">✕</button>
+          </div>
+          <div class="modal-body" id="modalBody"></div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const changelogs = {
+      'v3.2.1': '<ul><li>Исправлены критические уязвимости безопасности</li><li>Улучшена производительность API</li><li>Оптимизирован процесс установки</li></ul>',
+      'v3.1.8': '<ul><li>Исправлены ошибки авторизации</li><li>Добавлена поддержка Windows Server 2022</li></ul>',
+      'v3.0.5': '<ul><li>Обновлены зависимости</li><li>Исправлены незначительные ошибки UI</li></ul>',
+      'v2.9.9': '<ul><li>Первоначальная стабильная версия</li><li>Базовый функционал загрузки</li></ul>'
+    };
+
+    function showChangelog(version) {
+      document.getElementById('modalTitle').textContent = 'Changelog ' + version;
+      document.getElementById('modalBody').innerHTML = changelogs[version] || '<p>Нет данных</p>';
+      document.getElementById('modalOverlay').classList.add('active');
+    }
+    function closeModal() {
+      document.getElementById('modalOverlay').classList.remove('active');
+    }
+    function filterUpdates() {
+      const q = document.getElementById('searchInput').value.toLowerCase();
+      document.querySelectorAll('#updateList li').forEach(li => {
+        li.style.display = li.dataset.version.includes(q) ? '' : 'none';
+      });
+    }
+    document.getElementById('searchInput').addEventListener('keydown', e => {
+      if (e.key === 'Enter') filterUpdates();
+    });
+  </script>
+</body>
+</html>

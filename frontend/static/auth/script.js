@@ -22,16 +22,19 @@ document.addEventListener("DOMContentLoaded", () => {
                 headers: { "Content-Type": "application/x-www-form-urlencoded" },
                 body: formData,
                 credentials: "include",
-                redirect: "manual",
             });
 
-            if (response.ok || response.type === "opaqueredirect") {
-                window.location.href = "/main/";
-                return;
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.detail || "Ошибка авторизации");
             }
 
-            const data = await response.json();
-            throw new Error(data.detail || "Ошибка авторизации");
+            if (data.role === "admin") {
+                window.location.href = "/main/";
+            } else {
+                window.location.href = "/updates/";
+            }
 
         } catch (error) {
             console.error("Ошибка:", error);

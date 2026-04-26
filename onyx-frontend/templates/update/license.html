@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Лицензия — OnyX</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/onyx.css"/>
+  <link rel="stylesheet" href="/static/css/updates.css"/>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <a href="/updates" class="sidebar-brand">
+      <div class="sidebar-logo-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="white"><path d="M12 2l10 10-10 10L2 12z"/></svg></div>
+      <span class="sidebar-brand-name">OnyX</span>
+    </a>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">МЕНЮ</div>
+      <a href="/updates" class="nav-item">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+        Обновления
+      </a>
+      <a href="/license" class="nav-item active">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        Лицензия
+      </a>
+      <a href="/support" class="nav-item">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"/></svg>
+        Поддержка
+      </a>
+    </nav>
+    <div class="sidebar-bottom">
+      <div class="sidebar-user-row">
+        <div class="sidebar-user-avatar" id="sidebarAvatar">П</div>
+        <span class="sidebar-user-name" id="sidebarName">Пользователь</span>
+      </div>
+      <div class="nav-divider"></div>
+      <button id="logout-btn" class="nav-item nav-logout" style="width:100%;background:none;border:none;cursor:pointer;text-align:left;">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+        Выход
+      </button>
+    </div>
+  </aside>
+
+  <main class="content">
+    <div class="topbar">
+      <div class="topbar-breadcrumb">
+        <span class="bc-root">OnyX</span>
+        <svg class="bc-sep" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+        <span class="bc-page">Лицензия</span>
+      </div>
+    </div>
+
+    <div class="page-header">
+      <div>
+        <h1>Информация о лицензии</h1>
+        <span class="badge badge-active" style="margin-top:6px;display:inline-flex">● Активна</span>
+      </div>
+      <button class="btn btn-ghost" onclick="copyAll()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 4H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-4-4h-8zm6 0v4h4"/></svg>
+        Копировать данные
+      </button>
+    </div>
+
+    <div class="lic-grid">
+      <div class="lic-left">
+        <!-- Organization -->
+        <div class="card">
+          <div class="card-title">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2zM9 22V12h6v10"/></svg>
+            Организация
+          </div>
+          <div class="info-table">
+            <div class="info-row"><span class="info-label">Название</span><span class="info-value" id="licName">—</span></div>
+            <div class="info-row"><span class="info-label">ИНН</span><span class="info-value mono" id="licInn">—</span></div>
+            <div class="info-row"><span class="info-label">Email</span><span class="info-value" id="licEmail">—</span></div>
+            <div class="info-row"><span class="info-label">Тариф</span><span class="info-value" id="licTariff">—</span></div>
+            <div class="info-row"><span class="info-label">Лицензий</span><span class="info-value" id="licCount">—</span></div>
+            <div class="info-row"><span class="info-label">Действует до</span><span class="info-value" id="licExpiry">—</span></div>
+          </div>
+        </div>
+
+        <!-- Checksum -->
+        <div class="card">
+          <div class="card-title">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            Контрольная сумма
+          </div>
+          <div class="info-table">
+            <div class="info-row"><span class="info-label">Алгоритм</span><span class="info-value">SHA-256</span></div>
+            <div class="info-row" style="flex-direction:column;align-items:flex-start;gap:8px">
+              <span class="info-label">Значение</span>
+              <div class="checksum-box">
+                <span class="checksum-val" id="licChecksum">—</span>
+                <button class="copy-btn" onclick="copyText('licChecksum')" title="Копировать">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 4H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-4-4h-8zm6 0v4h4"/></svg>
+                </button>
+              </div>
+            </div>
+            <div class="info-row"><span class="info-label">Статус</span><span class="info-value"><span class="badge badge-active">✔ Подтверждена</span></span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Host -->
+      <div class="card">
+        <div class="card-title">Информация о хосте</div>
+        <div class="info-table">
+          <div class="info-row"><span class="info-label">Hostname / IP</span><span class="info-value mono" id="licHostname">—</span></div>
+          <div class="info-row"><span class="info-label">Операционная система</span><span class="info-value" id="licOs">—</span></div>
+          <div class="info-row">
+            <span class="info-label">MAC-адрес</span>
+            <div style="display:flex;align-items:center;gap:8px">
+              <span class="info-value mono" id="licMac">—</span>
+              <button class="copy-btn" onclick="copyText('licMac')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 4H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-4-4h-8zm6 0v4h4"/></svg></button>
+            </div>
+          </div>
+          <div class="info-row">
+            <span class="info-label">UUID</span>
+            <div style="display:flex;align-items:center;gap:8px">
+              <span class="info-value mono" id="licUuid">—</span>
+              <button class="copy-btn" onclick="copyText('licUuid')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 4H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-4-4h-8zm6 0v4h4"/></svg></button>
+            </div>
+          </div>
+          <div class="info-row" style="flex-direction:column;align-items:flex-start;gap:6px">
+            <span class="info-label">Комментарий</span>
+            <span class="info-value text-muted" id="licComment">—</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="/static/updates/script.js"></script>
+<script src="/static/api/script.js"></script>
+<script>
+  function copyText(id) {
+    navigator.clipboard.writeText(document.getElementById(id).textContent).catch(()=>{});
+  }
+  function copyAll() {
+    const data = [
+      `Организация: ${document.getElementById('licName').textContent}`,
+      `ИНН: ${document.getElementById('licInn').textContent}`,
+      `Email: ${document.getElementById('licEmail').textContent}`,
+      `Тариф: ${document.getElementById('licTariff').textContent}`,
+      `Лицензий: ${document.getElementById('licCount').textContent}`,
+      `Действует до: ${document.getElementById('licExpiry').textContent}`,
+      `Checksum: ${document.getElementById('licChecksum').textContent}`,
+      `Hostname: ${document.getElementById('licHostname').textContent}`,
+      `UUID: ${document.getElementById('licUuid').textContent}`,
+    ].join('\n');
+    navigator.clipboard.writeText(data).catch(()=>{});
+  }
+
+  // Load license info from API
+  (async () => {
+    try {
+      const res = await fetchWithRefresh('/licenses/my');
+      if (res && res.ok) {
+        const d = await res.json();
+        const set = (id, val) => { if(val) document.getElementById(id).textContent = val; };
+        set('licName',     d.organization?.name);
+        set('licInn',      d.organization?.inn);
+        set('licEmail',    d.organization?.email);
+        set('licTariff',   d.organization?.tariff);
+        set('licCount',    d.organization?.licenses);
+        set('licExpiry',   d.organization?.expiry);
+        set('licChecksum', d.checksum?.value);
+        set('licHostname', d.host?.hostname);
+        set('licOs',       d.host?.os);
+        set('licMac',      d.host?.mac);
+        set('licUuid',     d.host?.uuid);
+        set('licComment',  d.host?.comment);
+      }
+    } catch {}
+  })();
+
+  // Sidebar user
+  (async () => {
+    try {
+      const res = await fetch('/users/me', { credentials: 'include' });
+      if (res.ok) {
+        const u = await res.json();
+        const name = u.first_name || u.username || 'Пользователь';
+        document.getElementById('sidebarName').textContent = name;
+        document.getElementById('sidebarAvatar').textContent = name[0].toUpperCase();
+      }
+    } catch {}
+  })();
+</script>
+</body>
+</html>

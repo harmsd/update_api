@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Настройки — OnyX</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/onyx.css"/>
+  <link rel="stylesheet" href="/static/css/dashboard.css"/>
+</head>
+<body>
+<div class="app">
+  {% set page = 'settings' %}
+  {% include 'partials/_sidebar_admin.html' %}
+
+  <main class="content">
+    <div class="topbar">
+      <div class="topbar-breadcrumb">
+        <span class="bc-root">OnyX</span>
+        <svg class="bc-sep" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+        <span class="bc-page">Настройки</span>
+      </div>
+      <div class="topbar-icon-btn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6b6b80" stroke-width="1.6"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </div>
+    </div>
+
+    <div class="page-header" style="flex-direction:column;align-items:flex-start;gap:4px">
+      <h1>Настройки</h1>
+      <p style="font-size:13px;color:var(--muted)">Управление аккаунтом и безопасностью</p>
+    </div>
+
+    <div class="settings-layout">
+      <!-- Side nav -->
+      <div class="card settings-nav">
+        <div class="settings-nav-item active" onclick="showTab('profile', this)">Профиль</div>
+        <div class="settings-nav-item" onclick="showTab('security', this)">Безопасность</div>
+        <div class="settings-nav-item" onclick="showTab('api', this)">API-ключи</div>
+      </div>
+
+      <div>
+        <!-- Profile tab -->
+        <div class="settings-panel active card" id="tab-profile">
+          <div class="card-title">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"/></svg>
+            Данные профиля
+          </div>
+          <div class="avatar-area">
+            <div class="avatar-big" id="avatarInitial">А</div>
+            <div>
+              <button class="btn btn-ghost btn-sm">Загрузить фото</button>
+              <p class="avatar-hint">PNG, JPG до 2 МБ</p>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="inputName">Имя</label>
+            <input class="form-control" type="text" id="inputName" placeholder="Введите имя"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="inputEmail">Email</label>
+            <input class="form-control" type="email" id="inputEmail" placeholder="admin@example.com"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="inputRole">Роль</label>
+            <input class="form-control" type="text" id="inputRole" readonly/>
+          </div>
+          <div style="display:flex;justify-content:flex-end;align-items:center;gap:12px;margin-top:8px">
+            <span id="saveMsg" style="font-size:13px;display:none"></span>
+            <button class="btn btn-primary" onclick="saveProfile()">Сохранить изменения</button>
+          </div>
+        </div>
+
+        <!-- Security tab -->
+        <div class="settings-panel card" id="tab-security">
+          <div class="card-title">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            Смена пароля
+          </div>
+          <div class="form-group">
+            <label class="form-label">Текущий пароль</label>
+            <input class="form-control" type="password" id="curPassword" placeholder="••••••••"/>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Новый пароль</label>
+              <input class="form-control" type="password" id="newPassword" placeholder="••••••••"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Подтвердить</label>
+              <input class="form-control" type="password" id="confirmPassword" placeholder="••••••••"/>
+            </div>
+          </div>
+          <button class="btn btn-primary" onclick="changePassword()">Обновить пароль</button>
+
+          <div class="section-divider"></div>
+
+          <p style="font-size:14px;font-weight:600;margin-bottom:12px">Двухфакторная аутентификация</p>
+          <div class="setting-row">
+            <div class="setting-info">
+              <strong>Authenticator App (TOTP)</strong>
+              <span>Google Authenticator, Yandex Key</span>
+            </div>
+            <label class="toggle">
+              <input type="checkbox" id="totpToggle" checked onchange="toggleTotp(this)"/>
+              <div class="toggle-track"></div>
+              <div class="toggle-thumb"></div>
+            </label>
+          </div>
+
+          <div class="section-divider"></div>
+
+          <p style="font-size:14px;font-weight:600;margin-bottom:12px">Активные сессии</p>
+          <div class="setting-row">
+            <div class="setting-info">
+              <strong>MacBook Pro — Safari</strong>
+              <span>Москва · Сейчас активна</span>
+            </div>
+            <span class="badge badge-active">Текущая</span>
+          </div>
+        </div>
+
+        <!-- API tab -->
+        <div class="settings-panel card" id="tab-api">
+          <div class="card-title">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+            API-ключи
+          </div>
+          <div class="setting-row">
+            <div class="setting-info">
+              <strong>Production Key</strong>
+              <span>sk_live_••••••••3f2a · Создан 01.01.2026</span>
+            </div>
+            <div class="setting-row-actions">
+              <button class="btn btn-ghost btn-sm" onclick="navigator.clipboard.writeText('sk_live_3f2a')">Копировать</button>
+              <button class="btn btn-danger btn-sm">Отозвать</button>
+            </div>
+          </div>
+          <div class="setting-row">
+            <div class="setting-info">
+              <strong>Test Key</strong>
+              <span>sk_test_••••••••9c1d · Создан 15.02.2026</span>
+            </div>
+            <div class="setting-row-actions">
+              <button class="btn btn-ghost btn-sm" onclick="navigator.clipboard.writeText('sk_test_9c1d')">Копировать</button>
+              <button class="btn btn-danger btn-sm">Отозвать</button>
+            </div>
+          </div>
+          <div class="mt-16">
+            <button class="btn btn-primary">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+              Создать новый ключ
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="/static/dashboard/settings.js"></script>
+<script src="/static/api/script.js"></script>
+<script>
+  function changePassword() {
+    alert('Функция смены пароля будет доступна в следующей версии.');
+  }
+  function toggleTotp(el) {
+    console.log('TOTP:', el.checked);
+  }
+  // Update avatar initial when name loads
+  document.addEventListener('DOMContentLoaded', () => {
+    const nameInput = document.getElementById('inputName');
+    const avatar    = document.getElementById('avatarInitial');
+    const observer  = new MutationObserver(() => {
+      avatar.textContent = (nameInput.value || 'А')[0].toUpperCase();
+    });
+    observer.observe(nameInput, { attributes: true, attributeFilter: ['value'] });
+    nameInput.addEventListener('input', () => {
+      avatar.textContent = (nameInput.value || 'А')[0].toUpperCase();
+    });
+  });
+</script>
+</body>
+</html>

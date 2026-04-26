@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Поддержка</title>
+  <link rel="stylesheet" href="/static/css/update.css"/>
+  <link rel="stylesheet" href="/static/css/support.css"/>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <img src="/static/img/logo.svg" alt="logo" class="logo">
+      </div>
+      <nav class="menu">
+        <a class="menu-item" href="/updates">Обновления</a>
+        <a class="menu-item" href="/license">Лицензия</a>
+        <a class="menu-item active" href="/support">Поддержка</a>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="user-badge">П</div>
+        <button class="logout" id="logout-btn">Выход</button>
+      </div>
+    </aside>
+
+    <main class="content">
+      <header class="topbar">
+        <div>
+          <h1>Поддержка</h1>
+          <span class="status status-online">● онлайн</span>
+        </div>
+      </header>
+
+      <div class="chat-layout">
+        <div class="card chat-card">
+          <div class="chat-header">
+            <div class="agent-avatar">🧑‍💻</div>
+            <div>
+              <div class="agent-name">Техническая поддержка</div>
+              <div class="agent-status">Онлайн · Обычно отвечает за несколько минут</div>
+            </div>
+          </div>
+
+          <div class="chat-messages" id="chatMessages">
+            <div class="msg msg-support">
+
+              <div class="msg-time">Поддержка · сейчас</div>
+            </div>
+          </div>
+
+          <div class="chat-input-area">
+            <textarea
+              id="chatInput"
+              class="chat-input"
+              placeholder="Напишите сообщение..."
+              rows="1"
+              onkeydown="handleKey(event)"
+              oninput="autoResize(this)"
+            ></textarea>
+            <button class="send-btn" onclick="sendMessage()" title="Отправить">➤</button>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script>
+    function sendMessage() {
+      const input = document.getElementById('chatInput');
+      const text = input.value.trim();
+      if (!text) return;
+      appendMessage(text, 'user');
+      input.value = '';
+      input.style.height = '';
+      setTimeout(() => {
+        appendMessage('Ваше обращение принято. Специалист ответит в ближайшее время.', 'support');
+      }, 800);
+    }
+
+    function appendMessage(text, role) {
+      const messages = document.getElementById('chatMessages');
+      const div = document.createElement('div');
+      div.className = 'msg msg-' + role;
+      const now = new Date().toLocaleTimeString('ru-RU', {hour:'2-digit', minute:'2-digit'});
+      div.innerHTML = `
+        <div class="msg-bubble">${escapeHtml(text)}</div>
+        <div class="msg-time">${role === 'user' ? 'Вы' : 'Поддержка'} · ${now}</div>
+      `;
+      messages.appendChild(div);
+      messages.scrollTop = messages.scrollHeight;
+    }
+
+    function handleKey(e) {
+      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+    }
+    function autoResize(el) {
+      el.style.height = '';
+      el.style.height = Math.min(el.scrollHeight, 140) + 'px';
+    }
+    function prefillFaq(text) {
+      const input = document.getElementById('chatInput');
+      input.value = text;
+      input.focus();
+    }
+    function escapeHtml(text) {
+      return text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Лицензия</title>
+  <link rel="stylesheet" href="/static/css/update.css"/>
+  <link rel="stylesheet" href="/static/css/license-user.css"/>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <img src="/static/img/logo.svg" alt="logo" class="logo">
+      </div>
+      <nav class="menu">
+        <a class="menu-item" href="/updates">Обновления</a>
+        <a class="menu-item active" href="/license">Лицензия</a>
+        <a class="menu-item" href="/support">Поддержка</a>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="user-badge">П</div>
+        <button class="logout" id="logout-btn">Выход</button>
+      </div>
+    </aside>
+
+    <main class="content">
+      <header class="topbar">
+        <div>
+          <h1>Информация о лицензии</h1>
+          <span class="status">активна</span>
+        </div>
+        <div class="topbar-actions">
+          <button class="ghost-btn" onclick="copyLicenseInfo()">⧉ Копировать данные</button>
+        </div>
+      </header>
+
+      <div class="lic-grid">
+
+        <section class="card">
+          <div class="section-card-title">
+            <span class="section-icon">🏢</span> Организация
+          </div>
+          <div class="info-table">
+            <div class="info-row">
+              <span class="info-label">Название</span>
+              <span class="info-value">ООО «ТехноСофт»</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">ИНН</span>
+              <span class="info-value mono">7712345678</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Email</span>
+              <span class="info-value">
+                <a href="mailto:info@technosoft.ru">info@technosoft.ru</a>
+              </span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Тариф</span>
+              <span class="info-value">
+                <span class="badge-tariff">Профессиональный</span>
+              </span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Лицензий</span>
+              <span class="info-value">25</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Действует до</span>
+              <span class="info-value expiry">31.12.2026</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="section-card-title">
+            <span class="section-icon">🔐</span> Контрольная сумма
+          </div>
+          <div class="info-table">
+            <div class="info-row">
+              <span class="info-label">Алгоритм</span>
+              <span class="info-value"><span class="tag">SHA-256</span></span>
+            </div>
+            <div class="info-row info-row--col">
+              <span class="info-label">Значение</span>
+              <div class="checksum-box">
+                <span class="mono small" id="checksumVal">a3f5c2e1b7d94082ef3120c6a8b5d7f9e4c1023ab8d7e6f5c4b3a2910e8f7d6c</span>
+                <button class="copy-btn" onclick="copyText('checksumVal')" title="Копировать">⧉</button>
+              </div>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Статус</span>
+              <span class="info-value"><span class="badge-ok">✔ Подтверждена</span></span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Хост -->
+        <section class="card lic-host-card">
+          <div class="section-card-title">
+            <span class="section-icon">🖥️</span> Информация о хосте
+          </div>
+          <div class="info-table">
+            <div class="info-row">
+              <span class="info-label">Hostname / IP</span>
+              <span class="info-value mono">10.0.1.42</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Операционная система</span>
+              <span class="info-value">Windows Server 2022</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">MAC-адрес</span>
+              <span class="info-value mono">3C:52:A1:4B:7F:2D</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">UUID</span>
+              <span class="info-value mono small" id="uuidVal">f47ac10b-58cc-4372-a567-0e02b2c3d479</span>
+            </div>
+            <div class="info-row info-row--col">
+              <span class="info-label">Комментарий</span>
+              <span class="info-value muted">Основной сервер приложений, стойка A3</span>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <script>
+    function copyText(id) {
+      navigator.clipboard.writeText(document.getElementById(id).textContent);
+    }
+    function copyLicenseInfo() {
+      const data = `Организация: ООО «ТехноСофт»\nИНН: 7712345678\nEmail: info@technosoft.ru\nТариф: Профессиональный\nЛицензий: 25\nДействует до: 31.12.2026\nChecksum (SHA-256): a3f5c2e1b7d94082ef3120c6a8b5d7f9e4c1023ab8d7e6f5c4b3a2910e8f7d6c\nHostname: 10.0.1.42\nUUID: f47ac10b-58cc-4372-a567-0e02b2c3d479`;
+      navigator.clipboard.writeText(data);
+    }
+  </script>
+</body>
+</html>

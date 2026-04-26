@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Загрузка — OnyX</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/onyx.css"/>
+  <link rel="stylesheet" href="/static/css/dashboard.css"/>
+</head>
+<body>
+<div class="app">
+
+  {% set page = 'upload' %}
+  {% include 'partials/_sidebar_admin.html' %}
+
+  <main class="content">
+    <!-- Topbar -->
+    <div class="topbar">
+      <div class="topbar-breadcrumb">
+        <span class="bc-root">OnyX</span>
+        <svg class="bc-sep" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+        <span class="bc-page">Загрузка</span>
+      </div>
+      <div class="topbar-search-wrap">
+        <svg class="search-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#6b6b80" stroke-width="1.6"><path d="M21 21l-6-6m2-5a7 7 0 1 1-14 0 7 7 0 0 1 14 0z"/></svg>
+        <input class="topbar-search" type="search" placeholder="Поиск…"/>
+      </div>
+      <div class="topbar-icon-btn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6b6b80" stroke-width="1.6"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </div>
+    </div>
+
+    <!-- Page header -->
+    <div class="page-header">
+      <h1>Загрузить организацию</h1>
+    </div>
+
+    <div class="upload-layout">
+      <!-- LEFT -->
+      <div class="upload-col">
+
+        <!-- Dropzone -->
+        <div class="card">
+          <div class="card-title">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M13 2v7h7"/></svg>
+            Файл лицензии
+          </div>
+          <div class="dropzone" id="dropzone"
+               ondragover="onDragOver(event)" ondragleave="onDragLeave()" ondrop="onDrop(event)"
+               onclick="document.getElementById('fileInput').click()">
+            <div class="dropzone-icon">⬆</div>
+            <p class="dropzone-title">Перетащите файл сюда</p>
+            <p class="dropzone-hint">.enc — поля заполнятся автоматически</p>
+            <input type="file" id="fileInput" accept=".enc" hidden onchange="handleFile(event)"/>
+          </div>
+          <div class="file-chosen" id="fileChosen">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="1.6"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M13 2v7h7"/></svg>
+            <span class="file-name" id="fileName">—</span>
+            <button class="file-remove" onclick="removeFile()">✕</button>
+          </div>
+          <div class="upload-status" id="uploadStatus"></div>
+        </div>
+
+        <!-- Organization -->
+        <div class="card">
+          <div class="card-title">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2zM9 22V12h6v10"/></svg>
+            Организация
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="orgName">Название <span class="req">*</span></label>
+              <input class="form-control" type="text" id="orgName" placeholder="ООО «Название»"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="orgInn">ИНН <span class="req">*</span></label>
+              <input class="form-control" type="text" id="orgInn" placeholder="7700000000" maxlength="12"/>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="orgEmail">Email</label>
+              <input class="form-control" type="email" id="orgEmail" placeholder="admin@company.ru"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="orgTariff">Тариф</label>
+              <select class="form-control" id="orgTariff">
+                <option value="">— Выбрать —</option>
+                <option>Starter</option><option>Pro</option><option>Enterprise</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="orgLicCount">Количество лицензий</label>
+              <input class="form-control" type="number" id="orgLicCount" placeholder="10" min="1"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="orgExpiry">Дата окончания</label>
+              <input class="form-control" type="text" id="orgExpiry" placeholder="ДД.ММ.ГГГГ"/>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- RIGHT -->
+      <div class="upload-col">
+
+        <!-- Checksum -->
+        <div class="card">
+          <div class="card-title">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            Контрольная сумма
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="checksumAlgo">Алгоритм</label>
+              <select class="form-control" id="checksumAlgo"><option>SHA-256</option></select>
+            </div>
+            <div class="form-group" style="flex:2">
+              <label class="form-label" for="checksumValue">Значение</label>
+              <div class="input-copy-wrap">
+                <input class="form-control" type="text" id="checksumValue" placeholder="e3b0c44298fc1c149afb…" style="font-family:monospace;font-size:12px"/>
+                <button class="copy-btn" onclick="copyChecksum()" title="Копировать">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 4H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-4-4h-8zm6 0v4h4"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Статус проверки</label>
+            <div class="checksum-status">
+              <span class="cs-dot cs-neutral" id="csDot"></span>
+              <span class="cs-text" id="csText">Не проверено</span>
+              <button class="cs-verify-btn" onclick="verifyChecksum()">Проверить</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Host -->
+        <div class="card">
+          <div class="card-title">Информация о хосте</div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="hostName">Hostname / IP</label>
+              <input class="form-control" type="text" id="hostName" placeholder="192.168.1.1"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="hostOs">Операционная система</label>
+              <select class="form-control" id="hostOs">
+                <option value="">— Выбрать —</option>
+                <option>Windows Server 2022</option><option>Windows Server 2019</option>
+                <option>Ubuntu 22.04</option><option>Ubuntu 20.04</option>
+                <option>CentOS 8</option><option>Astra Linux</option><option>Другое</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="hostMac">MAC-адрес</label>
+              <input class="form-control" type="text" id="hostMac" placeholder="AA:BB:CC:DD:EE:FF" maxlength="17"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="hostUuid">UUID / Serial</label>
+              <input class="form-control" type="text" id="hostUuid" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="hostComment">Комментарий</label>
+            <textarea class="form-control" id="hostComment" placeholder="Дополнительная информация о хосте…" rows="3"></textarea>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Bottom bar -->
+    <div class="bottom-bar">
+      <p class="bottom-bar-hint">* — обязательные поля</p>
+      <div class="bottom-bar-actions">
+        <a href="/organizations" class="btn btn-ghost">Отмена</a>
+        <button class="btn btn-ghost" onclick="resetForm()">Сбросить</button>
+        <button class="btn btn-primary" onclick="submitForm()">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2zM17 21v-8H7v8M7 3v5h8"/></svg>
+          Сохранить
+        </button>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="/static/dashboard/licenses.js"></script>
+<script src="/static/api/script.js"></script>
+</body>
+</html>

@@ -1,0 +1,119 @@
+/* updates.css — operator portal */
+
+/* ── Updates page ── */
+.updates-layout {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 16px;
+  align-items: start;
+}
+
+.current-card .current-label {
+  font-size: 11px; color: var(--muted); text-transform: uppercase;
+  letter-spacing: 0.08em; margin-bottom: 12px;
+}
+.current-card .current-version { font-size: 40px; font-weight: 700; color: var(--purple); line-height: 1; margin-bottom: 8px; }
+.current-card .current-date    { font-size: 12px; color: var(--muted); margin-bottom: 14px; }
+
+.update-list { list-style: none; }
+.update-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.update-item:last-child { border-bottom: none; }
+.update-info { flex: 1; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.update-info strong { font-size: 14px; font-weight: 600; }
+.update-info small  { font-size: 12px; color: var(--muted); }
+.update-actions { display: flex; gap: 8px; flex-shrink: 0; }
+
+/* ── License page ── */
+.lic-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  align-items: start;
+}
+.lic-left  { display: flex; flex-direction: column; gap: 16px; }
+
+.info-table { display: flex; flex-direction: column; }
+.info-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.04);
+  gap: 16px;
+}
+.info-row:last-child { border-bottom: none; padding-bottom: 0; }
+.info-label { font-size: 12px; color: var(--muted); min-width: 120px; flex-shrink: 0; }
+.info-value { font-size: 13px; text-align: right; word-break: break-all; }
+.info-value.mono { font-family: monospace; }
+
+.checksum-box {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--input-bg); border-radius: var(--radius); padding: 8px 12px; margin-top: 6px;
+}
+.checksum-val { font-size: 11px; font-family: monospace; color: var(--muted); flex: 1; word-break: break-all; }
+
+/* ── Support / Chat ── */
+.chat-layout { max-width: 700px; }
+
+.chat-header {
+  display: flex; align-items: center; gap: 12px;
+  padding-bottom: 14px; border-bottom: 1px solid var(--border); margin-bottom: 16px;
+}
+.chat-agent-avatar {
+  width: 40px; height: 40px; border-radius: 10px;
+  background: var(--purple-dim); display: flex; align-items: center;
+  justify-content: center; font-size: 18px; flex-shrink: 0;
+}
+.chat-agent-name   { font-size: 14px; font-weight: 600; }
+.chat-agent-status { font-size: 12px; color: var(--green); }
+
+.chat-messages {
+  height: 320px; overflow-y: auto;
+  display: flex; flex-direction: column; gap: 10px;
+  margin-bottom: 16px; padding-right: 4px;
+}
+
+.msg { display: flex; flex-direction: column; }
+.msg-user  { align-items: flex-end; }
+.msg-support { align-items: flex-start; }
+
+.msg-bubble {
+  max-width: 75%; padding: 10px 14px; border-radius: 10px;
+  font-size: 13px; line-height: 1.5;
+}
+.msg-user    .msg-bubble { background: var(--purple); color: white; border-bottom-right-radius: 2px; }
+.msg-support .msg-bubble { background: var(--input-bg); color: var(--text); border-bottom-left-radius: 2px; }
+
+.msg-time { font-size: 10px; color: var(--muted2); margin-top: 4px; }
+
+.chat-input-area { display: flex; gap: 10px; align-items: flex-end; }
+.chat-input {
+  flex: 1; background: var(--input-bg); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 10px 12px;
+  font-size: 13px; color: var(--text); outline: none; resize: none;
+  font-family: 'Inter', sans-serif; line-height: 1.5; transition: border-color 0.2s;
+}
+.chat-input:focus { border-color: rgba(124,77,255,0.5); }
+.chat-send {
+  width: 40px; height: 40px; border-radius: var(--radius); flex-shrink: 0;
+  background: var(--purple); border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+}
+.chat-send:hover { background: var(--purple-hov); }
+
+/* ── Operator sidebar user badge ── */
+.sidebar-user-row {
+  display: flex; align-items: center; gap: 8px; padding: 8px 10px; margin-bottom: 4px;
+}
+.sidebar-user-avatar {
+  width: 26px; height: 26px; border-radius: 7px;
+  background: var(--purple-dim); display: flex; align-items: center;
+  justify-content: center; font-size: 11px; font-weight: 700; color: var(--purple); flex-shrink: 0;
+}
+.sidebar-user-name { font-size: 12px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+@media (max-width: 960px) {
+  .updates-layout { grid-template-columns: 1fr; }
+  .lic-grid { grid-template-columns: 1fr; }
+}

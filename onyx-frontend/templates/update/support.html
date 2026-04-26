@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Поддержка — OnyX</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/onyx.css"/>
+  <link rel="stylesheet" href="/static/css/updates.css"/>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <a href="/updates" class="sidebar-brand">
+      <div class="sidebar-logo-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="white"><path d="M12 2l10 10-10 10L2 12z"/></svg></div>
+      <span class="sidebar-brand-name">OnyX</span>
+    </a>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">МЕНЮ</div>
+      <a href="/updates" class="nav-item">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+        Обновления
+      </a>
+      <a href="/license" class="nav-item">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        Лицензия
+      </a>
+      <a href="/support" class="nav-item active">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"/></svg>
+        Поддержка
+      </a>
+    </nav>
+    <div class="sidebar-bottom">
+      <div class="sidebar-user-row">
+        <div class="sidebar-user-avatar" id="sidebarAvatar">П</div>
+        <span class="sidebar-user-name" id="sidebarName">Пользователь</span>
+      </div>
+      <div class="nav-divider"></div>
+      <button id="logout-btn" class="nav-item nav-logout" style="width:100%;background:none;border:none;cursor:pointer;text-align:left;">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+        Выход
+      </button>
+    </div>
+  </aside>
+
+  <main class="content">
+    <div class="topbar">
+      <div class="topbar-breadcrumb">
+        <span class="bc-root">OnyX</span>
+        <svg class="bc-sep" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+        <span class="bc-page">Поддержка</span>
+      </div>
+    </div>
+
+    <div class="page-header">
+      <div>
+        <h1>Поддержка</h1>
+        <span class="badge badge-active" style="margin-top:6px;display:inline-flex">● Онлайн</span>
+      </div>
+    </div>
+
+    <div class="chat-layout">
+      <div class="card">
+        <div class="chat-header">
+          <div class="chat-agent-avatar">🧑‍💻</div>
+          <div>
+            <p class="chat-agent-name">Техническая поддержка</p>
+            <p class="chat-agent-status">Онлайн · Обычно отвечает за несколько минут</p>
+          </div>
+        </div>
+
+        <div class="chat-messages" id="chatMessages">
+          <div class="msg msg-support">
+            <div class="msg-bubble">Здравствуйте! Как могу помочь?</div>
+            <div class="msg-time">Поддержка · сейчас</div>
+          </div>
+        </div>
+
+        <div class="chat-input-area">
+          <textarea id="chatInput" class="chat-input" placeholder="Напишите сообщение…" rows="1"
+            onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+          <button class="chat-send" onclick="sendMessage()" title="Отправить">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 2L11 13M22 2L15 22l-4-9-9-4 20-7z"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="/static/updates/script.js"></script>
+<script src="/static/api/script.js"></script>
+<script>
+  function sendMessage() {
+    const input = document.getElementById('chatInput');
+    const text  = input.value.trim();
+    if (!text) return;
+    appendMessage(text, 'user');
+    input.value = '';
+    input.style.height = '';
+    setTimeout(() => {
+      appendMessage('Ваше обращение принято. Специалист ответит в ближайшее время.', 'support');
+    }, 800);
+  }
+
+  function appendMessage(text, role) {
+    const messages = document.getElementById('chatMessages');
+    const div = document.createElement('div');
+    div.className = 'msg msg-' + role;
+    const now = new Date().toLocaleTimeString('ru-RU', { hour:'2-digit', minute:'2-digit' });
+    div.innerHTML = `
+      <div class="msg-bubble">${escapeHtml(text)}</div>
+      <div class="msg-time">${role === 'user' ? 'Вы' : 'Поддержка'} · ${now}</div>
+    `;
+    messages.appendChild(div);
+    messages.scrollTop = messages.scrollHeight;
+  }
+
+  function handleKey(e) {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+  }
+
+  function autoResize(el) {
+    el.style.height = '';
+    el.style.height = Math.min(el.scrollHeight, 140) + 'px';
+  }
+
+  function escapeHtml(text) {
+    return text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  // Sidebar user
+  (async () => {
+    try {
+      const res = await fetch('/users/me', { credentials: 'include' });
+      if (res.ok) {
+        const u = await res.json();
+        const name = u.first_name || u.username || 'Пользователь';
+        document.getElementById('sidebarName').textContent = name;
+        document.getElementById('sidebarAvatar').textContent = name[0].toUpperCase();
+      }
+    } catch {}
+  })();
+</script>
+</body>
+</html>

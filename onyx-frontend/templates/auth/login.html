@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Вход — OnyX</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/onyx.css"/>
+  <link rel="stylesheet" href="/static/css/login.css"/>
+</head>
+<body>
+<div class="login-page">
+
+  <!-- Left panel -->
+  <div class="login-left">
+    <div class="login-left-inner">
+      <div class="login-brand">
+        <div class="login-brand-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M12 2l10 10-10 10L2 12z"/></svg>
+        </div>
+        <span class="login-brand-name">OnyX</span>
+      </div>
+      <p class="login-desc">
+        Платформа управления лицензиями и организациями.
+        Загрузка, верификация, контроль доступа — в одном интерфейсе.
+      </p>
+      <blockquote class="login-quote">
+        <p>Security is not a product, but a process.</p>
+        <cite>— Bruce Schneier</cite>
+      </blockquote>
+      <p class="login-meta">Лицензионная платформа · v2.0</p>
+    </div>
+  </div>
+
+  <!-- Right panel -->
+  <div class="login-right">
+    <div class="login-card">
+      <div class="login-card-header">
+        <span class="login-card-title">Вход</span>
+        <div class="login-theme-btn">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#6b6b80" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </div>
+      </div>
+
+      <div id="errorAlert" class="alert alert-error" style="display:none"></div>
+
+      <form id="login-form">
+        <div class="form-group">
+          <label class="login-field-label" for="login">Имя пользователя</label>
+          <input class="login-input" type="text" id="login" name="login" placeholder="admin" required autocomplete="username"/>
+        </div>
+
+        <div class="form-group">
+          <label class="login-field-label" for="password">Пароль</label>
+          <div class="pw-wrap">
+            <input class="login-input" type="password" id="password" name="password" placeholder="••••••••" required autocomplete="current-password"/>
+            <button type="button" class="pw-toggle" id="pwToggle" aria-label="Показать пароль">
+              <svg id="eyeIcon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#6b6b80" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8zM12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6z"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <button type="submit" class="login-btn" id="submitBtn">Войти</button>
+        <a href="#" class="forgot-link">Забыли пароль?</a>
+      </form>
+    </div>
+  </div>
+
+</div>
+
+<script src="/static/auth/script.js"></script>
+<script src="/static/api/script.js"></script>
+<script>
+  // Password visibility toggle
+  const pwToggle = document.getElementById('pwToggle');
+  const pwInput  = document.getElementById('password');
+  const eyeIcon  = document.getElementById('eyeIcon');
+  pwToggle.addEventListener('click', () => {
+    const show = pwInput.type === 'password';
+    pwInput.type = show ? 'text' : 'password';
+    eyeIcon.innerHTML = show
+      ? '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24M1 1l22 22"/>'
+      : '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8zM12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6z"/>';
+  });
+
+  // Show error helper (используется в auth/script.js)
+  window.showLoginError = (msg) => {
+    const el = document.getElementById('errorAlert');
+    el.textContent = msg;
+    el.style.display = 'flex';
+  };
+</script>
+</body>
+</html>

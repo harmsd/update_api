@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Организации — OnyX</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/onyx.css"/>
+  <link rel="stylesheet" href="/static/css/dashboard.css"/>
+</head>
+<body>
+<div class="app">
+  {% set page = 'orgs' %}
+  {% include 'partials/_sidebar_admin.html' %}
+
+  <main class="content">
+    <!-- Topbar -->
+    <div class="topbar">
+      <div class="topbar-breadcrumb">
+        <span class="bc-root">OnyX</span>
+        <svg class="bc-sep" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+        <span class="bc-page">Организации</span>
+      </div>
+      <div class="topbar-search-wrap">
+        <svg class="search-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#6b6b80" stroke-width="1.6"><path d="M21 21l-6-6m2-5a7 7 0 1 1-14 0 7 7 0 0 1 14 0z"/></svg>
+        <input class="topbar-search" type="search" placeholder="Поиск…"/>
+      </div>
+      <div class="topbar-icon-btn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6b6b80" stroke-width="1.6"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </div>
+    </div>
+
+    <!-- Page header -->
+    <div class="page-header">
+      <div>
+        <h1>Организации</h1>
+        <span class="badge badge-purple" id="activeCount">—</span>
+      </div>
+      <div class="topbar-actions">
+        <select class="topbar-select" id="statusFilter">
+          <option>Все статусы</option>
+          <option>Активна</option><option>Истекает</option>
+          <option>Просрочена</option><option>Заблокирована</option>
+        </select>
+        <input class="topbar-search-input" type="search" id="searchInput" placeholder="Поиск организации…"/>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-grid">
+      <div class="card stat-card">
+        <p class="stat-label">Всего организаций</p>
+        <p class="stat-value text-purple" id="statTotal">—</p>
+        <p class="stat-hint" id="statTotalHint">—</p>
+      </div>
+      <div class="card stat-card">
+        <p class="stat-label">Активных лицензий</p>
+        <p class="stat-value text-green" id="statActive">—</p>
+        <p class="stat-hint" id="statActiveHint">—</p>
+      </div>
+      <div class="card stat-card">
+        <p class="stat-label">Истекают скоро</p>
+        <p class="stat-value text-yellow" id="statExpiring">—</p>
+        <p class="stat-hint">В течение 30 дней</p>
+      </div>
+    </div>
+
+    <!-- Table -->
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Организация</th><th>ИНН</th><th>Хост</th>
+            <th>Тариф</th><th>Статус</th><th>Дата окончания</th><th>Действия</th>
+          </tr>
+        </thead>
+        <tbody id="licenseTableBody">
+          <tr><td colspan="7" style="text-align:center;color:var(--muted);padding:2rem">Загрузка…</td></tr>
+        </tbody>
+      </table>
+      <div class="pagination">
+        <span id="paginationInfo">—</span>
+        <div class="page-btns" id="pageBtns"></div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Edit modal -->
+<div class="modal-overlay" id="editModal">
+  <div class="modal">
+    <div class="modal-close-row">
+      <div><h2>Редактировать организацию</h2><p class="modal-subtitle" id="editModalSubtitle"></p></div>
+      <button class="modal-close" onclick="closeEditModal()">✕</button>
+    </div>
+    <input type="hidden" id="editId"/>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Название <span class="req">*</span></label><input class="form-control" id="editName" placeholder="ООО «Название»"/></div>
+      <div class="form-group"><label class="form-label">ИНН <span class="req">*</span></label><input class="form-control" id="editInn" placeholder="7700000000" maxlength="12"/></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Email</label><input class="form-control" type="email" id="editEmail" placeholder="admin@company.ru"/></div>
+      <div class="form-group"><label class="form-label">Тариф</label>
+        <select class="form-control" id="editTariff"><option>Starter</option><option>Pro</option><option>Enterprise</option></select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Hostname / IP</label><input class="form-control" id="editHostname" placeholder="192.168.1.1"/></div>
+      <div class="form-group"><label class="form-label">Операционная система</label>
+        <select class="form-control" id="editOs">
+          <option value="">— Выбрать —</option>
+          <option>Windows Server 2022</option><option>Windows Server 2019</option>
+          <option>Ubuntu 22.04</option><option>Ubuntu 20.04</option>
+          <option>CentOS 8</option><option>Astra Linux</option><option>Другое</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">MAC-адрес</label><input class="form-control" id="editMac" placeholder="AA:BB:CC:DD:EE:FF" maxlength="17"/></div>
+      <div class="form-group"><label class="form-label">UUID / Serial</label><input class="form-control" id="editUuid" placeholder="xxxxxxxx-xxxx-…"/></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Дата окончания</label><input class="form-control" id="editExpiry" placeholder="ДД.ММ.ГГГГ"/></div>
+      <div class="form-group"><label class="form-label">Статус</label>
+        <select class="form-control" id="editDisabled"><option value="false">Активна</option><option value="true">Заблокирована</option></select>
+      </div>
+    </div>
+    <div class="form-group"><label class="form-label">Комментарий</label><textarea class="form-control" id="editComment" rows="3" placeholder="Дополнительная информация…"></textarea></div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeEditModal()">Отмена</button>
+      <button class="btn btn-primary" onclick="saveEdit()">💾 Сохранить</button>
+    </div>
+  </div>
+</div>
+
+<!-- Key modal -->
+<div class="modal-overlay" id="keyModal">
+  <div class="modal">
+    <div class="modal-close-row">
+      <div><h2>🔑 Ключ доступа</h2><p class="modal-subtitle" id="keyModalSubtitle">—</p></div>
+      <button class="modal-close" onclick="closeKeyModal()">✕</button>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Лицензионный ключ (SHA-256)</label>
+      <div class="input-copy-wrap"><input class="form-control mono" type="text" id="keyHash" readonly style="font-size:12px"/><button class="copy-btn" onclick="copyField('keyHash')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 4H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-4-4h-8zm6 0v4h4"/></svg></button></div>
+    </div>
+    <div class="key-divider">Учётные данные для входа в личный кабинет</div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Логин</label><div class="input-copy-wrap"><input class="form-control" type="text" id="keyLogin" readonly/><button class="copy-btn" onclick="copyField('keyLogin')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 4H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-4-4h-8zm6 0v4h4"/></svg></button></div></div>
+      <div class="form-group"><label class="form-label">Пароль</label><div class="input-copy-wrap"><input class="form-control" type="text" id="keyPassword" readonly/><button class="copy-btn" onclick="copyField('keyPassword')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 4H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-4-4h-8zm6 0v4h4"/></svg></button></div></div>
+    </div>
+    <div class="key-warning">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0zM12 9v4M12 17h.01"/></svg>
+      Сохраните данные — пароль показывается только один раз
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeKeyModal()">Закрыть</button>
+      <button class="btn btn-primary" onclick="regenerateKey()">🔄 Перегенерировать</button>
+    </div>
+  </div>
+</div>
+
+<script src="/static/dashboard/organizations.js"></script>
+<script src="/static/api/script.js"></script>
+<script>
+  // Patch openEditModal to also set subtitle
+  const _origOpen = openEditModal;
+  window.openEditModal = function(id) {
+    _origOpen(id);
+    const lic = allLicenses.find(l => l.id === id);
+    if (lic) document.getElementById('editModalSubtitle').textContent = lic.name || '';
+  };
+</script>
+</body>
+</html>

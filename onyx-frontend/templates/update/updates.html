@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Обновления — OnyX</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/onyx.css"/>
+  <link rel="stylesheet" href="/static/css/updates.css"/>
+</head>
+<body>
+<div class="app">
+
+  <!-- Operator sidebar -->
+  <aside class="sidebar">
+    <a href="/updates" class="sidebar-brand">
+      <div class="sidebar-logo-icon">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="white"><path d="M12 2l10 10-10 10L2 12z"/></svg>
+      </div>
+      <span class="sidebar-brand-name">OnyX</span>
+    </a>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">МЕНЮ</div>
+      <a href="/updates" class="nav-item active">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+        Обновления
+      </a>
+      <a href="/license" class="nav-item">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        Лицензия
+      </a>
+      <a href="/support" class="nav-item">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"/></svg>
+        Поддержка
+      </a>
+    </nav>
+    <div class="sidebar-bottom">
+      <div class="sidebar-user-row">
+        <div class="sidebar-user-avatar" id="sidebarAvatar">П</div>
+        <span class="sidebar-user-name" id="sidebarName">Пользователь</span>
+      </div>
+      <div class="nav-divider"></div>
+      <button id="logout-btn" class="nav-item nav-logout" style="width:100%;background:none;border:none;cursor:pointer;text-align:left;">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+        Выход
+      </button>
+    </div>
+  </aside>
+
+  <main class="content">
+    <div class="topbar">
+      <div class="topbar-breadcrumb">
+        <span class="bc-root">OnyX</span>
+        <svg class="bc-sep" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+        <span class="bc-page">Обновления</span>
+      </div>
+      <div class="topbar-search-wrap">
+        <svg class="search-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#6b6b80" stroke-width="1.6"><path d="M21 21l-6-6m2-5a7 7 0 1 1-14 0 7 7 0 0 1 14 0z"/></svg>
+        <input class="topbar-search" type="search" id="searchInput" placeholder="Поиск версии…" oninput="filterUpdates()"/>
+      </div>
+    </div>
+
+    <div class="page-header">
+      <h1>Обновление дистрибутива</h1>
+    </div>
+
+    <div class="updates-layout">
+      <!-- Current version -->
+      <div class="card current-card">
+        <p class="current-label">Текущая версия</p>
+        <p class="current-version">v3.2.1</p>
+        <p class="current-date">Установлено: 15.03.2026</p>
+        <span class="badge badge-active">✔ Актуально</span>
+      </div>
+
+      <!-- Version list -->
+      <div class="card">
+        <div class="card-title">Доступные версии</div>
+        <ul class="update-list" id="updateList">
+          <li class="update-item" data-version="v3.2.1">
+            <div class="update-info">
+              <span class="badge badge-active">Последняя</span>
+              <strong>v3.2.1</strong>
+              <small>Дата: 15.03.2026</small>
+            </div>
+            <div class="update-actions">
+              <button class="btn btn-ghost btn-sm" onclick="showChangelog('v3.2.1')">Подробнее</button>
+              <button class="btn btn-primary btn-sm">⬇ Скачать</button>
+            </div>
+          </li>
+          <li class="update-item" data-version="v3.1.8">
+            <div class="update-info">
+              <strong>v3.1.8</strong>
+              <small>Дата: 02.02.2026</small>
+            </div>
+            <div class="update-actions">
+              <button class="btn btn-ghost btn-sm" onclick="showChangelog('v3.1.8')">Подробнее</button>
+              <button class="btn btn-primary btn-sm">⬇ Скачать</button>
+            </div>
+          </li>
+          <li class="update-item" data-version="v3.0.5">
+            <div class="update-info">
+              <strong>v3.0.5</strong>
+              <small>Дата: 18.12.2025</small>
+            </div>
+            <div class="update-actions">
+              <button class="btn btn-ghost btn-sm" onclick="showChangelog('v3.0.5')">Подробнее</button>
+              <button class="btn btn-primary btn-sm">⬇ Скачать</button>
+            </div>
+          </li>
+          <li class="update-item" data-version="v2.9.9">
+            <div class="update-info">
+              <strong>v2.9.9</strong>
+              <small>Дата: 01.11.2025</small>
+            </div>
+            <div class="update-actions">
+              <button class="btn btn-ghost btn-sm" onclick="showChangelog('v2.9.9')">Подробнее</button>
+              <button class="btn btn-primary btn-sm">⬇ Скачать</button>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Changelog modal -->
+<div class="modal-overlay" id="changelogModal">
+  <div class="modal" style="max-width:460px">
+    <div class="modal-close-row">
+      <h2 id="changelogTitle">Список изменений</h2>
+      <button class="modal-close" onclick="closeChangelog()">✕</button>
+    </div>
+    <ul id="changelogBody" style="padding-left:18px;color:var(--muted);font-size:13px;line-height:1.9"></ul>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeChangelog()">Закрыть</button>
+    </div>
+  </div>
+</div>
+
+<script src="/static/updates/script.js"></script>
+<script src="/static/api/script.js"></script>
+<script>
+  const changelogs = {
+    'v3.2.1': ['Исправлены критические уязвимости безопасности','Улучшена производительность API','Оптимизирован процесс установки'],
+    'v3.1.8': ['Исправлены ошибки авторизации','Добавлена поддержка Windows Server 2022'],
+    'v3.0.5': ['Обновлены зависимости','Исправлены незначительные ошибки UI'],
+    'v2.9.9': ['Первоначальная стабильная версия','Базовый функционал загрузки'],
+  };
+
+  function showChangelog(v) {
+    document.getElementById('changelogTitle').textContent = 'Changelog ' + v;
+    const items = (changelogs[v] || ['Нет данных']).map(i => `<li>${i}</li>`).join('');
+    document.getElementById('changelogBody').innerHTML = items;
+    document.getElementById('changelogModal').classList.add('open');
+  }
+  function closeChangelog() {
+    document.getElementById('changelogModal').classList.remove('open');
+  }
+  function filterUpdates() {
+    const q = document.getElementById('searchInput').value.toLowerCase();
+    document.querySelectorAll('.update-item').forEach(li => {
+      li.style.display = li.dataset.version.includes(q) ? '' : 'none';
+    });
+  }
+
+  // Load user info for sidebar
+  (async () => {
+    try {
+      const res = await fetch('/users/me', { credentials: 'include' });
+      if (res.ok) {
+        const u = await res.json();
+        const name = u.first_name || u.username || 'Пользователь';
+        document.getElementById('sidebarName').textContent = name;
+        document.getElementById('sidebarAvatar').textContent = name[0].toUpperCase();
+      }
+    } catch {}
+  })();
+</script>
+</body>
+</html>

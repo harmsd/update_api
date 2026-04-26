@@ -35,7 +35,7 @@ body {
 .sidebar {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-start;
   padding: 24px 18px;
   background: rgba(31, 42, 68, 0.92);
   border-right: 1px solid var(--border);
@@ -73,6 +73,7 @@ body {
   align-items: center;
   justify-content: space-between;
   gap: 12px;
+  margin-top: auto;
 }
 
 .user-badge {
@@ -226,10 +227,5 @@ input {
 @media (max-width: 960px) {
   .app {
     grid-template-columns: 1fr;
-  }
-
-  .sidebar {
-    border-right: none;
-    border-bottom: 1px solid var(--border);
   }
 }
