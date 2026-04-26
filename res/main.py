@@ -23,7 +23,7 @@ origins = [
 ]
 
 app = FastAPI()
-app.mount("/static", StaticFiles(directory="../frontend/static"), name="static")
+app.mount("/static", StaticFiles(directory="../onyx-frontend/static"), name="static")
 
 app.include_router(db_router)
 app.include_router(users_router)

@@ -9,7 +9,7 @@ router = APIRouter(prefix="/main", tags=["main"])
 organizations_router = APIRouter(prefix="/organizations", tags=["organizations"])
 settings_router = APIRouter(prefix="/settings", tags=["settings"])
 
-templates = Jinja2Templates(directory="../frontend/templates")
+templates = Jinja2Templates(directory="../onyx-frontend/templates")
 
 
 @organizations_router.get("/")
@@ -18,8 +18,12 @@ async def organizations_page(
     current_user: User = Depends(require_admin),
 ):
     return templates.TemplateResponse(
-        "/dashboard/organizations.html",
-        {"request": request, "user": current_user}
+        request=request,
+        name="/dashboard/organizations.html",
+        context={
+            "user": current_user,
+            "sidebar": "/partials/_sidebar_admin.html"
+        }
     )
 
 
@@ -29,8 +33,12 @@ async def settings_page(
     current_user: User = Depends(require_admin),
 ):
     return templates.TemplateResponse(
-        "/dashboard/settings.html",
-        {"request": request, "user": current_user}
+        request=request,
+        name="/dashboard/settings.html",
+        context={
+            "user": current_user,
+            "sidebar": "/partials/_sidebar_admin.html"
+        }
     )
 
 
@@ -40,6 +48,10 @@ async def licenses_page(
     current_user: User = Depends(require_admin),
 ):
     return templates.TemplateResponse(
-        "/dashboard/licenses.html",
-        {"request": request, "user": current_user}
+        request=request,
+        name="/dashboard/licenses.html",
+        context={
+            "user": current_user,
+            "sidebar": "/partials/_sidebar_admin.html"
+        }
     )

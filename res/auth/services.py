@@ -29,8 +29,9 @@ from exceptions import (
 )
 
 _failed_attempts: dict[str, list[float]] = defaultdict(list)
+_block_until: dict[str, float] = {}
 
-MAX_ATTEMPTS = 5 
+MAX_ATTEMPTS = 5
 WINDOW_SECONDS = 60
 BLOCK_SECONDS = 300
 
@@ -71,20 +72,21 @@ def validate_auth_user(
     ip = request.client.host
     now = time.time()
 
-    _failed_attempts[ip] = [
-        t for t in _failed_attempts[ip]
-        if now - t < WINDOW_SECONDS
-    ]
-    if len(_failed_attempts[ip]) >= MAX_ATTEMPTS:
-        oldest = _failed_attempts[ip][0]
-        seconds_left = int(BLOCK_SECONDS - (now - oldest))
+    block_end = _block_until.get(ip, 0)
+    if now < block_end:
+        seconds_left = int(block_end - now)
         raise HTTPException(
             status_code=status.HTTP_429_TOO_MANY_REQUESTS,
             detail=f"Слишком много попыток. Попробуйте через {seconds_left} сек.",
         )
 
+    _failed_attempts[ip] = [t for t in _failed_attempts[ip] if now - t < WINDOW_SECONDS]
+
     if not (user := users_db.get(username)):
         _failed_attempts[ip].append(now)
+        if len(_failed_attempts[ip]) >= MAX_ATTEMPTS:
+            _block_until[ip] = now + BLOCK_SECONDS
+            _failed_attempts.pop(ip, None)
         raise invalid_username_or_password
 
     if not auth_utils.validate_password(
@@ -92,12 +94,16 @@ def validate_auth_user(
         hashed_password=user.password,
     ):
         _failed_attempts[ip].append(now)
+        if len(_failed_attempts[ip]) >= MAX_ATTEMPTS:
+            _block_until[ip] = now + BLOCK_SECONDS
+            _failed_attempts.pop(ip, None)
         raise invalid_username_or_password
 
     if user.disabled:
         raise user_is_disabled
 
     _failed_attempts.pop(ip, None)
+    _block_until.pop(ip, None)
     return user
 
 def get_current_token_payload(

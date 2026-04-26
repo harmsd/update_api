@@ -61,7 +61,7 @@ def validate_password(
 def encode_refresh_jwt(payload: dict) -> str:
     return encode_jwt(
         payload={"sub": payload["sub"], "type": "refresh"},
-        expire_timedelta=timedelta(days=7),
+        expire_timedelta=timedelta(days=settings.auth_jwt.refresh_token_expire_days),
     )
 
 

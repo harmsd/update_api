@@ -12,16 +12,16 @@ support_router = APIRouter(prefix="/support", tags=["support"])
 async def update(
     user: User = Depends(get_current_user_from_cookie),
 ):
-    return FileResponse("../frontend/templates/update/updates.html")
+    return FileResponse("../onyx-frontend/templates/update/updates.html")
 
 @license_router.get("/")
 async def license(
     user: User = Depends(get_current_user_from_cookie),
 ):
-    return FileResponse("../frontend/templates/update/license.html")
+    return FileResponse("../onyx-frontend/templates/update/license.html")
 
 @support_router.get("/")
 async def support(
     user: User = Depends(get_current_user_from_cookie),
 ):
-    return FileResponse("../frontend/templates/update/support.html")
+    return FileResponse("../onyx-frontend/templates/update/support.html")
