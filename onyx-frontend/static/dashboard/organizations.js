@@ -1,6 +1,6 @@
 'use strict';
 
-const PAGE_SIZE  = 6;
+const PAGE_SIZE  = 10;
 let allLicenses  = [];
 let currentPage  = 1;
 let currentKeyId = null;
